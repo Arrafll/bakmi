@@ -72,7 +72,7 @@
 import { ref } from 'vue'
 import { router, usePage } from '@inertiajs/vue3'
 import { route } from 'ziggy-js'
-import { HomeIcon, ClipboardDocumentListIcon, TicketIcon, ArrowLeftOnRectangleIcon } from '@heroicons/vue/24/outline'
+import { HomeIcon, ClipboardDocumentListIcon, TicketIcon, QrCodeIcon } from '@heroicons/vue/24/outline'
 
 defineProps({
     title: {
@@ -106,6 +106,11 @@ const menus = [
         label: 'Voucher Promo',
         icon: TicketIcon,
         route: 'admin.vouchers.index',
+    },
+        {
+        label: 'Meja',
+        icon: QrCodeIcon,
+        route: 'admin.tables.index',
     },
 ]
 

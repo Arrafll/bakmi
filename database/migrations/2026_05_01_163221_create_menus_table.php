@@ -19,6 +19,7 @@ return new class extends Migration
             $table->string('image')->nullable();
             $table->string('category')->default('main');
             $table->boolean('is_available')->default(true);
+            $table->softDeletes();
             $table->timestamps();
         });
     }

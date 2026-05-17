@@ -7,6 +7,8 @@ use Illuminate\Database\Eloquent\Model;
 class Order extends Model
 {
     protected $fillable = [
+        'table_id',
+        'table_session_id',
         'customer_name',
         'customer_phone',
         'notes',
@@ -19,5 +21,10 @@ class Order extends Model
     public function items()
     {
         return $this->hasMany(OrderItem::class);
+    }
+
+    public function table()
+    {
+        return $this->belongsTo(RestaurantTable::class, 'table_id');
     }
 }
