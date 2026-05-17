@@ -1,0 +1,63 @@
+services:
+
+  nginx:
+    build:
+      context: .
+      dockerfile: Dockerfile
+      target: nginx-stage
+    container_name: bakmi_nginx
+    restart: unless-stopped
+    ports:
+      - "127.0.0.1:8000:80"     # Host Nginx proxies to this port
+    depends_on:
+      - app
+    networks:
+      - bakmi
+
+  app:
+    build:
+      context: .
+      dockerfile: Dockerfile
+      target: app
+    container_name: bakmi_app
+    restart: unless-stopped
+    env_file: .env
+    volumes:
+      - /opt/bakmi/.env:/var/www/html/.env
+      - storage_data:/var/www/html/storage
+      - cache_data:/var/www/html/bootstrap/cache
+    expose:
+      - "9000"                   # Only reachable inside Docker network
+    depends_on:
+      db:
+        condition: service_healthy
+    networks:
+      - bakmi
+
+  db:
+    image: mysql:8.0
+    container_name: bakmi_db
+    restart: unless-stopped
+    environment:
+      MYSQL_DATABASE: ${DB_DATABASE:-bakmi}
+      MYSQL_USER: ${DB_USERNAME:-bakmi}
+      MYSQL_PASSWORD: ${DB_PASSWORD:-secret}
+      MYSQL_ROOT_PASSWORD: ${DB_ROOT_PASSWORD:-rootsecret}
+    volumes:
+      - db_data:/var/lib/mysql
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "localhost", "-u", "root", "-p${DB_ROOT_PASSWORD:-rootsecret}"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    networks:
+      - bakmi
+
+volumes:
+  db_data:
+  storage_data:
+  cache_data:
+
+networks:
+  bakmi:
+    driver: bridge
