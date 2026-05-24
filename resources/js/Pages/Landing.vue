@@ -1,6 +1,5 @@
 <template>
   <div class="page-root">
-    <!-- Texture overlay -->
     <div class="grain-overlay" aria-hidden="true"></div>
 
     <AppHeader title="Selamat Datang" subtitle="Sajian lezat pilihan kami" />
@@ -12,9 +11,9 @@
           <div class="hero-badge">✦ Buka Setiap Hari</div>
           <h1 class="hero-name">{{ company.name }}</h1>
           <p class="hero-tagline">{{ company.tagline }}</p>
-          <p class="text-grey">Di setiap mangkuk Bakmi Mas Agus, tersimpan dedikasi untuk menghadirkan rasa yang tidak hanya lezat, tetapi juga berkesan. Kami percaya bahwa makanan terbaik adalah yang mampu menghadirkan kehangatan dan kebersamaan.
+          <p class="hero-desc">Di setiap mangkuk Bakmi Mas Agus, tersimpan dedikasi untuk menghadirkan rasa yang tidak hanya lezat, tetapi juga berkesan. Kami percaya bahwa makanan terbaik adalah yang mampu menghadirkan kehangatan dan kebersamaan.
 
-Menggunakan bahan berkualitas dan racikan bumbu khas, kami menghadirkan bakmi yang menggugah selera sekaligus menghadirkan rasa “rumah” di setiap suapan.</p>
+Menggunakan bahan berkualitas dan racikan bumbu khas, kami menghadirkan bakmi yang menggugah selera sekaligus menghadirkan rasa "rumah" di setiap suapan.</p>
         </div>
         <div class="hero-image-wrap">
           <div class="hero-image-frame">
@@ -26,30 +25,28 @@ Menggunakan bahan berkualitas dan racikan bumbu khas, kami menghadirkan bakmi ya
 
       <!-- Divider -->
       <div class="section-divider">
-        <span>✦</span>
-        <span>✦</span>
-        <span>✦</span>
+        <span>✦</span><span>✦</span><span>✦</span>
       </div>
 
-      <!-- Info Section -->
-      <section class="info-grid">
-        <div class="info-card info-card--wide">
-          <span class="info-label">Tentang Kami</span>
-          <p class="info-desc">{{ company.description }}</p>
+      <!-- Info Strip -->
+      <section class="info-strip">
+
+        <!-- Alamat + Telepon side by side -->
+        <div class="info-row">
+          <div class="info-item">
+            <span class="info-label">📍 Alamat</span>
+            <p class="info-value">{{ company.address }}</p>
+          </div>
+          <div class="info-divider-v" aria-hidden="true"></div>
+          <div class="info-item">
+            <span class="info-label">📞 Telepon</span>
+            <p class="info-value">{{ company.phone }}</p>
+          </div>
         </div>
 
-        <div class="info-card">
-          <span class="info-label">Alamat</span>
-          <p class="info-value">{{ company.address }}</p>
-        </div>
-
-        <div class="info-card">
-          <span class="info-label">Telepon</span>
-          <p class="info-value">{{ company.phone }}</p>
-        </div>
-
-        <div class="info-card info-card--hours">
-          <span class="info-label">Jam Buka</span>
+        <!-- Jam Buka -->
+        <div class="hours-block">
+          <span class="info-label">🕐 Jam Buka</span>
           <ul class="hours-list">
             <li v-for="(hours, day) in company.opening_hours" :key="day">
               <span class="hours-day">{{ day }}</span>
@@ -57,6 +54,7 @@ Menggunakan bahan berkualitas dan racikan bumbu khas, kami menghadirkan bakmi ya
             </li>
           </ul>
         </div>
+
       </section>
     </main>
 
@@ -79,7 +77,7 @@ const props = defineProps({
 <style scoped>
 @import url('https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,600;1,400&family=DM+Sans:wght@300;400;500&display=swap');
 
-/* ── Root & Theme ─────────────────────────────────── */
+/* ── Root ─────────────────────────────────────────── */
 .page-root {
   min-height: 100vh;
   background-color: #fef3e2;
@@ -89,7 +87,6 @@ const props = defineProps({
   overflow-x: hidden;
 }
 
-/* Grain texture */
 .grain-overlay {
   pointer-events: none;
   position: fixed;
@@ -111,14 +108,10 @@ const props = defineProps({
   gap: 64px;
 }
 
-.hero-inner {
-  flex: 1;
-  min-width: 0;
-}
+.hero-inner { flex: 1; min-width: 0; }
 
 .hero-badge {
   display: inline-block;
-  font-family: 'DM Sans', sans-serif;
   font-size: 11px;
   font-weight: 500;
   letter-spacing: 0.18em;
@@ -128,7 +121,7 @@ const props = defineProps({
   border: 1px solid rgba(146, 64, 14, 0.2);
   padding: 5px 14px;
   border-radius: 100px;
-  margin-bottom: 28px;
+  margin-bottom: 24px;
   animation: fadeUp 0.5s ease both;
 }
 
@@ -139,7 +132,7 @@ const props = defineProps({
   line-height: 1.0;
   color: #1c0a00;
   letter-spacing: -0.02em;
-  margin: 0 0 16px;
+  margin: 0 0 14px;
   animation: fadeUp 0.5s 0.1s ease both;
 }
 
@@ -148,50 +141,18 @@ const props = defineProps({
   font-style: italic;
   font-size: 1.4rem;
   color: #92400e;
-  margin: 0 0 40px;
+  margin: 0 0 20px;
   line-height: 1.5;
   animation: fadeUp 0.5s 0.2s ease both;
 }
 
-.hero-actions {
-  display: flex;
-  gap: 16px;
-  align-items: center;
+.hero-desc {
+  font-size: 0.9rem;
+  line-height: 1.8;
+  color: #5a3a1a;
+  margin: 0;
+  white-space: pre-line;
   animation: fadeUp 0.5s 0.3s ease both;
-}
-
-.btn-primary {
-  display: inline-block;
-  padding: 13px 30px;
-  background: #92400e;
-  color: #fef3e2;
-  font-family: 'DM Sans', sans-serif;
-  font-size: 14px;
-  font-weight: 500;
-  letter-spacing: 0.04em;
-  text-decoration: none;
-  border-radius: 100px;
-  transition: background 0.2s, transform 0.15s;
-}
-
-.btn-primary:hover {
-  background: #78340b;
-  transform: translateY(-1px);
-}
-
-.btn-ghost {
-  display: inline-block;
-  padding: 13px 20px;
-  color: #92400e;
-  font-family: 'DM Sans', sans-serif;
-  font-size: 14px;
-  font-weight: 400;
-  text-decoration: none;
-  transition: color 0.2s;
-}
-
-.btn-ghost:hover {
-  color: #1c0a00;
 }
 
 /* ── Hero Image ───────────────────────────────────── */
@@ -253,106 +214,122 @@ const props = defineProps({
   background: linear-gradient(to left, transparent, rgba(180, 83, 9, 0.35));
 }
 
-/* ── Info Grid ────────────────────────────────────── */
-.info-grid {
+/* ── Info Strip ───────────────────────────────────── */
+.info-strip {
   position: relative;
   z-index: 1;
   max-width: 1100px;
-  margin: 0 auto 80px;
+  margin: 0 auto 72px;
   padding: 0 40px;
-  display: grid;
-  grid-template-columns: repeat(4, 1fr);
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+/* Alamat + Telepon row */
+.info-row {
+  display: flex;
+  align-items: stretch;
+  background: rgba(146, 64, 14, 0.05);
+  border: 1px solid rgba(146, 64, 14, 0.1);
+  border-radius: 16px;
+  overflow: hidden;
+}
+
+.info-item {
+  flex: 1;
+  padding: 20px 24px;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.info-divider-v {
+  width: 1px;
+  background: rgba(146, 64, 14, 0.1);
+  margin: 16px 0;
+}
+
+/* Hours block */
+.hours-block {
+  background: rgba(146, 64, 14, 0.05);
+  border: 1px solid rgba(146, 64, 14, 0.1);
+  border-radius: 16px;
+  padding: 14px 20px;
+  display: flex;
+  align-items: center;
   gap: 20px;
 }
 
-.info-card {
-  background: rgba(146, 64, 14, 0.06);
-  border: 1px solid rgba(146, 64, 14, 0.1);
-  border-radius: 20px;
-  padding: 28px 24px;
-  transition: transform 0.2s, background 0.2s;
+.hours-block .info-label {
+  flex-shrink: 0;
+  margin-bottom: 0;
 }
 
-.info-card:hover {
-  transform: translateY(-3px);
-  background: rgba(146, 64, 14, 0.1);
-}
-
-.info-card--wide {
-  grid-column: span 2;
-}
-
-.info-card--hours {
-  grid-column: span 2;
-}
-
+/* Shared label */
 .info-label {
   display: block;
   font-size: 10px;
   font-weight: 500;
-  letter-spacing: 0.15em;
+  letter-spacing: 0.14em;
   text-transform: uppercase;
   color: #92400e;
-  margin-bottom: 12px;
-}
-
-.info-desc {
-  font-size: 0.95rem;
-  line-height: 1.75;
-  color: #4a2910;
-  margin: 0;
+  margin-bottom: 4px;
 }
 
 .info-value {
   font-family: 'Cormorant Garamond', serif;
-  font-size: 1.3rem;
+  font-size: 1.15rem;
   font-weight: 600;
   color: #1c0a00;
   margin: 0;
   line-height: 1.4;
 }
 
-/* ── Hours ────────────────────────────────────────── */
+/* Hours list — inline pills */
 .hours-list {
+  flex: 1;
   list-style: none;
   margin: 0;
   padding: 0;
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 8px 16px;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
 }
 
 .hours-list li {
   display: flex;
-  justify-content: space-between;
-  align-items: baseline;
-  gap: 8px;
-  padding-bottom: 8px;
-  border-bottom: 1px solid rgba(146, 64, 14, 0.1);
+  align-items: center;
+  gap: 5px;
+  background: rgba(146, 64, 14, 0.07);
+  border: 1px solid rgba(146, 64, 14, 0.12);
+  border-radius: 100px;
+  padding: 3px 12px 3px 10px;
 }
 
 .hours-day {
-  font-size: 13px;
+  font-size: 12px;
   font-weight: 500;
   color: #4a2910;
 }
 
 .hours-time {
   font-family: 'Cormorant Garamond', serif;
-  font-size: 14px;
+  font-size: 13px;
+  font-weight: 600;
   color: #92400e;
+}
+
+.hours-time::before {
+  content: '·';
+  margin-right: 4px;
+  opacity: 0.4;
 }
 
 /* ── Animation ────────────────────────────────────── */
 @keyframes fadeUp {
-  from {
-    opacity: 0;
-    transform: translateY(18px);
-  }
-  to {
-    opacity: 1;
-    transform: translateY(0);
-  }
+  from { opacity: 0; transform: translateY(18px); }
+  to   { opacity: 1; transform: translateY(0); }
 }
 
 /* ── Responsive ───────────────────────────────────── */
@@ -364,41 +341,19 @@ const props = defineProps({
     text-align: center;
   }
 
-  .hero-actions {
-    justify-content: center;
-  }
+  .hero-image-wrap { width: 280px; }
+  .hero-image { height: 320px; }
 
-  .hero-image-wrap {
-    width: 280px;
-  }
+  .info-strip { padding: 0 24px; }
 
-  .hero-image {
-    height: 320px;
-  }
-
-  .info-grid {
-    grid-template-columns: 1fr 1fr;
-    padding: 0 24px;
-  }
-
-  .info-card--wide,
-  .info-card--hours {
-    grid-column: span 2;
-  }
+  .hours-block { flex-direction: column; gap: 12px; }
 }
 
 @media (max-width: 560px) {
-  .info-grid {
-    grid-template-columns: 1fr;
-  }
+  .info-row { flex-direction: column; }
+  .info-divider-v { width: auto; height: 1px; margin: 0 16px; }
 
-  .info-card--wide,
-  .info-card--hours {
-    grid-column: span 1;
-  }
-
-  .hours-list {
-    grid-template-columns: 1fr;
-  }
+  .hours-list { grid-template-columns: 1fr; }
+  .hours-day { min-width: 90px; }
 }
 </style>
