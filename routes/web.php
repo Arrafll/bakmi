@@ -4,21 +4,37 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\MenuController;
 use App\Http\Controllers\AdminController;
 use App\Http\Controllers\CartController;
+// use App\Models\Menu; // Commenting out unused Menu import
+use Inertia\Inertia;
 use App\Http\Controllers\OrderController;
 use App\Http\Controllers\VoucherController;
 
 Route::get('/', function () {
-    return redirect()->route('menu.index');
+    $company = [
+        'name' => 'Bakmi Jawa Mas Agus',
+        'tagline' => 'Sajian lezat pilihan kami',
+        'description' => 'Bakmi Jawa Mas Agus adalah rumah makan keluarga yang menyajikan bakmi tradisional dengan resep turun-temurun. Kami menggunakan bahan segar dan teknik memasak yang menjaga cita rasa otentik.',
+        'address' => 'Jl. Contoh No.123, Kota Contoh',
+        'phone' => '0812-3456-7890',
+        'opening_hours' => [
+            'Senin-Jumat' => '09:00 - 21:00',
+            'Sabtu-Minggu' => '09:00 - 22:00',
+        ],
+        'hero_image' => asset('images/hero.jpg'),
+    ];
+    return Inertia::render('Landing', [
+        'company' => (object) $company,
+    ]);
 });
 
-Route::get('/menu', [MenuController::class, 'index'])->name('menu.index');
-
-// Cart routes
-Route::get('/cart', [CartController::class, 'index'])->name('cart.index');
-Route::post('/cart/add', [CartController::class, 'add'])->name('cart.add');
-Route::post('/cart/update', [CartController::class, 'update'])->name('cart.update');
-Route::post('/cart/remove', [CartController::class, 'remove'])->name('cart.remove');
-Route::post('/cart/clear', [CartController::class, 'clear'])->name('cart.clear');
+// ── QR Table Entry ────────────────────────────────────────────────────────────
+// Rate-limited to 30/min per IP to prevent token enumeration.
+// Token validated + session regenerated inside the controller.
+// Table ID is NEVER exposed in the URL – only stored server-side in session.
+Route::get('/order/{qr_token}', [TableQrController::class, 'enter'])
+    ->name('order.enter')
+    ->middleware(['throttle:qr-scan'])
+    ->where('qr_token', '[A-Za-z0-9]{32,64}'); // route-level pre-validation
 
 // Order routes
 Route::post('/order', [OrderController::class, 'store'])->name('order.store');

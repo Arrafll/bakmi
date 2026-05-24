@@ -62,7 +62,7 @@
 
         <!-- CTA -->
         <Link
-          :href="route('menu.index')"
+          :href="route('home')"
           class="w-full block text-center bg-amber-700 hover:bg-amber-600 text-white font-bold py-3 rounded-xl transition-colors text-lg"
         >
           Pesan Lagi

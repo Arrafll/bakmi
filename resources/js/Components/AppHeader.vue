@@ -12,6 +12,7 @@
                         <p class="text-amber-200 text-sm mt-0.5">{{ subtitle || 'Bakmi Jawa Cita Rasa Khas' }}</p>
                     </div>
                 </div>
+                <div v-if="$page.url !== '/'">
                 <Link :href="route('cart.index')"
                     class="relative flex items-center gap-2 bg-amber-700 hover:bg-amber-600 transition-colors px-4 py-2 rounded-full flex-shrink-0">
                     <ShoppingCartIcon class="w-5 h-5 text-white-500" />
@@ -21,6 +22,7 @@
                         {{ cartCount > 99 ? '99+' : cartCount }}
                     </span>
                 </Link>
+                </div>
             </div>
     </header>
 </template>

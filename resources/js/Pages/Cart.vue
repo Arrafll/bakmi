@@ -8,7 +8,7 @@
         <p class="text-6xl mb-4">🛒</p>
         <p class="text-xl mb-6">Keranjang Anda kosong</p>
         <Link
-          :href="route('menu.index')"
+          :href="route('home')"
           class="bg-amber-700 hover:bg-amber-600 text-white font-semibold px-6 py-3 rounded-xl transition-colors inline-block"
         >
           Lihat Menu
