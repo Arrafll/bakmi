@@ -3,12 +3,10 @@
 use App\Http\Controllers\Admin\TableController;
 use App\Http\Controllers\AdminController;
 use App\Http\Controllers\CartController;
-use App\Http\Controllers\MenuController;
 use App\Http\Controllers\OrderController;
 use App\Http\Controllers\TableQrController;
 use App\Http\Controllers\VoucherController;
 use Inertia\Inertia;
-use Illuminate\Support\Facades\Route;
 
 Route::get('/', function () {
     $company = [
@@ -27,8 +25,6 @@ Route::get('/', function () {
         'company' => (object) $company,
     ]);
 });
-
-Route::get('/menu', [MenuController::class, 'index'])->name('menu.index');
 
 // ── QR Table Entry ────────────────────────────────────────────────────────────
 // Rate-limited to 30/min per IP to prevent token enumeration.
