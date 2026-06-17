@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Category;
 use App\Models\Menu;
 use App\Models\RestaurantTable;
 use Illuminate\Http\Request;
@@ -64,11 +65,12 @@ class TableQrController extends Controller
             'table' => [
                 'name'       => $table->name,
                 'branch'     => $table->branch,
-                'sessionId'  => $tableSessionId, // safe to expose – it's opaque
+                'sessionId'  => $tableSessionId,
             ],
-            'menus' => Menu::orderBy('category')
+            'menus'      => Menu::orderBy('category')
                 ->orderBy('name')
                 ->get(['id', 'name', 'description', 'price', 'category', 'image', 'is_available']),
+            'categories' => Category::orderBy('name')->pluck('name'),
         ]);
     }
 }

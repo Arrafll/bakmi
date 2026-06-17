@@ -6,6 +6,7 @@ use App\Http\Controllers\CartController;
 use App\Http\Controllers\OrderController;
 use App\Http\Controllers\TableQrController;
 use App\Http\Controllers\VoucherController;
+use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
 
 Route::get('/', function () {
@@ -69,6 +70,12 @@ Route::middleware('guest')->group(function () {
 Route::middleware('auth')->prefix('admin')->name('admin.')->group(function () {
     Route::get('/dashboard', [AdminController::class, 'dashboard'])->name('dashboard');
     Route::post('/logout', [AdminController::class, 'logout'])->name('logout');
+
+    // Master Category
+    Route::get('/categories', [AdminController::class, 'categoriesIndex'])->name('categories.index');
+    Route::post('/categories', [AdminController::class, 'categoriesStore'])->name('categories.store');
+    Route::put('/categories/{category}', [AdminController::class, 'categoriesUpdate'])->name('categories.update');
+    Route::delete('/categories/{category}', [AdminController::class, 'categoriesDestroy'])->name('categories.destroy');
 
     // Master Menu
     Route::get('/menus', [AdminController::class, 'menusIndex'])->name('menus.index');

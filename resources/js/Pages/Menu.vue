@@ -3,7 +3,7 @@
     <AppHeader title="" subtitle="Sajian lezat pilihan kami" />
 
     <div class="max-w-6xl mx-auto px-4 mt-8">
-      <CategoryFilter :categories="categories" v-model="activeCategory" />
+      <CategoryFilter :categories="categoryList" v-model="activeCategory" />
     </div>
 
     <main class="max-w-6xl mx-auto px-4 py-10">
@@ -36,11 +36,18 @@ const props = defineProps({
     type: Array,
     default: () => [],
   },
+  categories: {
+    type: Array,
+    default: null,
+  },
 })
 
 const activeCategory = ref('all')
 
-const categories = computed(() => {
+const categoryList = computed(() => {
+  if (props.categories) {
+    return ['all', ...props.categories.map((c) => (typeof c === 'object' ? c.name : c))]
+  }
   const unique = [...new Set(props.menus.map((m) => m.category))]
   return ['all', ...unique]
 })

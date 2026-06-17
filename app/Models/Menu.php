@@ -14,4 +14,9 @@ class Menu extends Model
         'category',
         'is_available',
     ];
+
+    public function categoryModel()
+    {
+        return $this->belongsTo(Category::class, 'category_id');
+    }
 }

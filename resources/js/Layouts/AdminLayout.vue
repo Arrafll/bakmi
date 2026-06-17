@@ -18,7 +18,7 @@
 
             <!-- Nav -->
             <nav class="flex-1 px-3 py-4 space-y-1 overflow-y-auto">
-                <a v-for="item in menus" :key="item.route" :href="route(item.route)" :class="[
+                <Link v-for="item in menus" :key="item.route" :href="route(item.route)" :class="[
                     'flex items-center gap-3 px-3 py-2 rounded-lg text-sm font-medium transition-colors',
                     isActive(route(item.route))
                         ? 'bg-amber-700 text-white'
@@ -26,7 +26,7 @@
                 ]">
                     <component :is="item.icon" class="w-4 h-4 flex-shrink-0" />
                     {{ item.label }}
-                </a>
+                </Link>
             </nav>
 
         </aside>
@@ -70,9 +70,9 @@
 
 <script setup>
 import { ref } from 'vue'
-import { router, usePage } from '@inertiajs/vue3'
+import { Link, router, usePage } from '@inertiajs/vue3'
 import { route } from 'ziggy-js'
-import { HomeIcon, ClipboardDocumentListIcon, TicketIcon, QrCodeIcon } from '@heroicons/vue/24/outline'
+import { HomeIcon, ClipboardDocumentListIcon, TicketIcon, QrCodeIcon, TagIcon } from '@heroicons/vue/24/outline'
 
 defineProps({
     title: {
@@ -97,8 +97,18 @@ const menus = [
         icon: HomeIcon,
         route: 'admin.dashboard',
     },
+    // {
+    //     label: 'Pesanan',
+    //     icon: ClipboardDocumentListIcon,
+    //     route: 'admin.orders.index',
+    // },
     {
-        label: 'Master Menu',
+        label: 'Data Kategori',
+        icon: TagIcon,
+        route: 'admin.categories.index',
+    },
+    {
+        label: 'Data Menu',
         icon: ClipboardDocumentListIcon,
         route: 'admin.menus.index',
     },
@@ -107,7 +117,7 @@ const menus = [
         icon: TicketIcon,
         route: 'admin.vouchers.index',
     },
-        {
+    {
         label: 'Meja',
         icon: QrCodeIcon,
         route: 'admin.tables.index',

@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Inertia\Inertia;
+use App\Models\Category;
 use App\Models\Menu;
 use App\Models\Order;
 use App\Models\Voucher;
@@ -22,7 +23,7 @@ class AdminController extends Controller
 
     public function login(Request $request)
     {
-        $credentials = $request->validate([
+    $credentials = $request->validate([
             'email'    => ['required', 'email'],
             'password' => ['required'],
         ]);
@@ -73,7 +74,8 @@ class AdminController extends Controller
     public function menusIndex()
     {
         return Inertia::render('Admin/Menus', [
-            'menus' => Menu::orderBy('category')->orderBy('name')->get(),
+            'menus'      => Menu::orderBy('category')->orderBy('name')->get(),
+            'categories' => Category::orderBy('name')->pluck('name'),
         ]);
     }
 
@@ -83,7 +85,7 @@ class AdminController extends Controller
             'name'         => 'required|string|max:255',
             'description'  => 'nullable|string|max:500',
             'price'        => 'required|numeric|min:0',
-            'category'     => 'required|string|max:100',
+            'category'     => 'required|string|max:100|exists:categories,name',
             'image'        => 'nullable|url|max:500',
             'is_available' => 'boolean',
         ]);
@@ -99,7 +101,7 @@ class AdminController extends Controller
             'name'         => 'required|string|max:255',
             'description'  => 'nullable|string|max:500',
             'price'        => 'required|numeric|min:0',
-            'category'     => 'required|string|max:100',
+            'category'     => 'required|string|max:100|exists:categories,name',
             'image'        => 'nullable|url|max:500',
             'is_available' => 'boolean',
         ]);
@@ -114,6 +116,44 @@ class AdminController extends Controller
         $menu->delete();
 
         return back()->with('success', 'Menu berhasil dihapus.');
+    }
+
+    // ── Category CRUD ─────────────────────────────────────────────────────────
+
+    public function categoriesIndex()
+    {
+        return Inertia::render('Admin/Categories', [
+            'categories' => Category::withCount('menus')->orderBy('name')->get(),
+        ]);
+    }
+
+    public function categoriesStore(Request $request)
+    {
+        $data = $request->validate([
+            'name' => 'required|string|max:100|unique:categories,name',
+        ]);
+
+        Category::create(['name' => strtolower(trim($data['name']))]);
+
+        return back()->with('success', 'Kategori berhasil ditambahkan.');
+    }
+
+    public function categoriesUpdate(Request $request, Category $category)
+    {
+        $data = $request->validate([
+            'name' => 'required|string|max:100|unique:categories,name,' . $category->id,
+        ]);
+
+        $category->update(['name' => strtolower(trim($data['name']))]);
+
+        return back()->with('success', 'Kategori berhasil diperbarui.');
+    }
+
+    public function categoriesDestroy(Category $category)
+    {
+        $category->delete();
+
+        return back()->with('success', 'Kategori berhasil dihapus.');
     }
 
     // ── Voucher CRUD ─────────────────────────────────────────────────────────

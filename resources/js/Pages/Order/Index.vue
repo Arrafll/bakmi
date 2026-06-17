@@ -225,11 +225,14 @@ const props = defineProps({
   table: {
     type: Object,
     required: true,
-    // { name: string, branch: string, sessionId: string }
   },
   menus: {
     type: Array,
     default: () => [],
+  },
+  categories: {
+    type: Array,
+    default: null,
   },
 })
 
@@ -256,6 +259,9 @@ const formErrors = ref({})
 
 // ── Derived ───────────────────────────────────────────────────────────────────
 const categories = computed(() => {
+  if (props.categories) {
+    return ['all', ...props.categories]
+  }
   const unique = [...new Set(props.menus.map(m => m.category))]
   return ['all', ...unique]
 })
