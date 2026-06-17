@@ -43,14 +43,20 @@ class OrderController extends Controller
 
         $total = max(0, $subtotal - $discountAmount);
 
+        // Pull table context from session (set by TableQrController).
+        // Both fields are nullable – existing non-QR orders remain unaffected.
+        $tableContext = $request->session()->get('table');
+
         $order = Order::create([
-            'customer_name'   => $request->customer_name,
-            'customer_phone'  => $request->customer_phone,
-            'notes'           => $request->notes,
-            'voucher_code'    => $voucherCode,
-            'discount_amount' => $discountAmount,
-            'total_price'     => $total,
-            'status'          => 'pending',
+            'table_id'         => $tableContext['id'] ?? null,
+            'table_session_id' => $tableContext['session_id'] ?? null,
+            'customer_name'    => $request->customer_name,
+            'customer_phone'   => $request->customer_phone,
+            'notes'            => $request->notes,
+            'voucher_code'     => $voucherCode,
+            'discount_amount'  => $discountAmount,
+            'total_price'      => $total,
+            'status'           => 'pending',
         ]);
 
         foreach ($cart as $item) {
