@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\CartItem;
 use App\Models\Category;
 use App\Models\Menu;
 use App\Models\RestaurantTable;
@@ -23,29 +24,38 @@ class TableQrController extends Controller
      */
     public function enter(Request $request, string $qrToken): Response
     {
-
-        // Validate token format before hitting the DB (prevents needless queries
-        // from random/malformed tokens; token is alphanumeric, 32-64 chars)
         abort_unless(
             preg_match('/^[A-Za-z0-9]{32,64}$/', $qrToken) === 1,
             404
         );
 
-        // Find table or 404 – intentionally no "invalid token" message to
-        // prevent oracle attacks that distinguish "wrong format" vs "not found"
         $table = RestaurantTable::where('qr_token', $qrToken)
             ->where('is_active', true)
             ->firstOrFail();
 
-        // ── Session hardening ─────────────────────────────────────────────────
+        // If the session already belongs to this exact table, just re-render
+        // without touching the session or cart – handles browser refresh.
+        if ($request->session()->get('table.id') === $table->id) {
+            return Inertia::render('Order/Index', [
+                'table' => [
+                    'name'      => $table->name,
+                    'branch'    => $table->branch,
+                    'sessionId' => $request->session()->get('table.session_id'),
+                ],
+                'menus'      => Menu::orderBy('category')
+                    ->orderBy('name')
+                    ->get(['id', 'name', 'description', 'price', 'category', 'image', 'is_available']),
+                'categories' => Category::orderBy('name')->pluck('name'),
+            ]);
+        }
+
+        // ── New scan (different table or no session) ──────────────────────────
+        // Capture OLD session_id BEFORE regenerating so we can clean up its cart.
+        $oldSessionId = $request->session()->get('table.session_id');
+
         // Regenerate the session ID to prevent session fixation.
-        // This is called BEFORE we write anything to the session so the data
-        // lands in the fresh session, not the old one.
         $request->session()->regenerate();
 
-        // A table_session_id groups every cart action and order placed in this
-        // scan session.  Useful for: grouping orders per visit, analytics,
-        // and allowing staff to see "all orders from Table 3 tonight".
         $tableSessionId = (string) Str::uuid();
 
         $request->session()->put('table', [
@@ -55,17 +65,16 @@ class TableQrController extends Controller
             'session_id' => $tableSessionId,
         ]);
 
-        // Clear any stale cart from a previous session on this device
-        $request->session()->forget('cart');
+        // Delete the old cart now that the new session is established.
+        if ($oldSessionId) {
+            CartItem::where('session_id', $oldSessionId)->delete();
+        }
 
-        // ── Render ────────────────────────────────────────────────────────────
-        // IMPORTANT: table.id is intentionally NOT sent to the frontend.
-        // All order operations look it up via session('table.id') on the server.
         return Inertia::render('Order/Index', [
             'table' => [
-                'name'       => $table->name,
-                'branch'     => $table->branch,
-                'sessionId'  => $tableSessionId,
+                'name'      => $table->name,
+                'branch'    => $table->branch,
+                'sessionId' => $tableSessionId,
             ],
             'menus'      => Menu::orderBy('category')
                 ->orderBy('name')

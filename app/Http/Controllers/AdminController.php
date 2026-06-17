@@ -8,6 +8,7 @@ use Inertia\Inertia;
 use App\Models\Category;
 use App\Models\Menu;
 use App\Models\Order;
+use App\Models\RestaurantTable;
 use App\Models\Voucher;
 
 class AdminController extends Controller
@@ -67,6 +68,30 @@ class AdminController extends Controller
         $request->session()->regenerateToken();
 
         return redirect()->route('admin.login');
+    }
+
+    // ── Orders ──────────────────────────────────────────────────────────────
+
+    public function ordersIndex()
+    {
+        $orders = Order::with(['table:id,name', 'items.menu:id,name,price'])
+            ->orderByDesc('created_at')
+            ->get();
+
+        return Inertia::render('Admin/Orders', [
+            'orders' => $orders,
+        ]);
+    }
+
+    public function ordersUpdateStatus(Request $request, Order $order)
+    {
+        $request->validate([
+            'status' => 'required|in:dipesan,diproses,selesai,dibatalkan',
+        ]);
+
+        $order->update(['status' => $request->status]);
+
+        return back()->with('success', 'Status pesanan berhasil diperbarui.');
     }
 
     // ── Menu CRUD ────────────────────────────────────────────────────────────

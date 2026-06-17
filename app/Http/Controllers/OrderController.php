@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
+use App\Models\CartItem;
 use App\Models\Order;
 use App\Models\Voucher;
 use Inertia\Inertia;
@@ -18,15 +19,18 @@ class OrderController extends Controller
             'voucher_code'   => 'nullable|string|max:50',
         ]);
 
-        $cart = session('cart', []);
+        $tableContext = $request->session()->get('table');
+        $sessionId    = $tableContext['session_id'] ?? null;
 
-        if (empty($cart)) {
+        $cartItems = $sessionId
+            ? CartItem::with('menu:id,name,price')->where('session_id', $sessionId)->get()
+            : collect();
+
+        if ($cartItems->isEmpty()) {
             return back()->withErrors(['cart' => 'Keranjang kosong.']);
         }
 
-        $subtotal = (float) array_sum(
-            array_map(fn($item) => $item['price'] * $item['quantity'], $cart)
-        );
+        $subtotal = $cartItems->sum(fn ($item) => $item->menu->price * $item->quantity);
 
         $discountAmount = 0;
         $voucherCode    = null;
@@ -43,31 +47,30 @@ class OrderController extends Controller
 
         $total = max(0, $subtotal - $discountAmount);
 
-        // Pull table context from session (set by TableQrController).
-        // Both fields are nullable – existing non-QR orders remain unaffected.
-        $tableContext = $request->session()->get('table');
-
         $order = Order::create([
             'table_id'         => $tableContext['id'] ?? null,
-            'table_session_id' => $tableContext['session_id'] ?? null,
+            'table_session_id' => $sessionId,
             'customer_name'    => $request->customer_name,
             'customer_phone'   => $request->customer_phone,
             'notes'            => $request->notes,
             'voucher_code'     => $voucherCode,
             'discount_amount'  => $discountAmount,
             'total_price'      => $total,
-            'status'           => 'pending',
+            'status'           => 'dipesan',
         ]);
 
-        foreach ($cart as $item) {
+        foreach ($cartItems as $item) {
             $order->items()->create([
-                'menu_id'  => $item['menu_id'],
-                'quantity' => $item['quantity'],
-                'price'    => $item['price'],
+                'menu_id'  => $item->menu_id,
+                'quantity' => $item->quantity,
+                'price'    => (float) $item->menu->price,
             ]);
         }
 
-        session()->forget('cart');
+        // Clear DB cart for this session
+        if ($sessionId) {
+            CartItem::where('session_id', $sessionId)->delete();
+        }
 
         return redirect()->route('order.success', $order->id);
     }

@@ -25,7 +25,7 @@ Route::get('/', function () {
     return Inertia::render('Landing', [
         'company' => (object) $company,
     ]);
-});
+})->name('home');
 
 // ── QR Table Entry ────────────────────────────────────────────────────────────
 // Rate-limited to 30/min per IP to prevent token enumeration.
@@ -70,6 +70,10 @@ Route::middleware('guest')->group(function () {
 Route::middleware('auth')->prefix('admin')->name('admin.')->group(function () {
     Route::get('/dashboard', [AdminController::class, 'dashboard'])->name('dashboard');
     Route::post('/logout', [AdminController::class, 'logout'])->name('logout');
+
+    // Orders
+    Route::get('/orders', [AdminController::class, 'ordersIndex'])->name('orders.index');
+    Route::put('/orders/{order}/status', [AdminController::class, 'ordersUpdateStatus'])->name('orders.update-status');
 
     // Master Category
     Route::get('/categories', [AdminController::class, 'categoriesIndex'])->name('categories.index');

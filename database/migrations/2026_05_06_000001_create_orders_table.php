@@ -14,7 +14,7 @@ return new class extends Migration
             $table->string('customer_phone');
             $table->text('notes')->nullable();
             $table->decimal('total_price', 10, 2);
-            $table->enum('status', ['pending', 'processing', 'completed', 'cancelled'])->default('pending');
+            $table->enum('status', ['dipesan', 'diproses', 'selesai', 'dibatalkan'])->default('dipesan');
             $table->timestamps();
         });
     }

@@ -3,17 +3,42 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
+use App\Models\CartItem;
 use App\Models\Menu;
 use Inertia\Inertia;
 
 class CartController extends Controller
 {
-    public function index()
+    /** Resolve the table_session_id or abort 403. */
+    private function sessionId(Request $request): string
     {
-        $cart = session('cart', []);
+        return $request->session()->get('table.session_id')
+            ?? abort(403, 'No table session.');
+    }
+
+    /** Return cart rows for the current session as a plain array. */
+    public static function cartForSession(string $sessionId): array
+    {
+        return CartItem::with('menu:id,name,price,image,is_available')
+            ->where('session_id', $sessionId)
+            ->get()
+            ->map(fn ($row) => [
+                'menu_id'  => $row->menu_id,
+                'name'     => $row->menu?->name ?? '',
+                'price'    => (float) ($row->menu?->price ?? 0),
+                'image'    => $row->menu?->image,
+                'quantity' => $row->quantity,
+            ])
+            ->values()
+            ->all();
+    }
+
+    public function index(Request $request)
+    {
+        $sessionId = $this->sessionId($request);
 
         return Inertia::render('Cart', [
-            'cart' => array_values($cart),
+            'cart' => self::cartForSession($sessionId),
         ]);
     }
 
@@ -26,26 +51,20 @@ class CartController extends Controller
 
         $menu = Menu::findOrFail($request->menu_id);
 
-        if (!$menu->is_available) {
+        if (! $menu->is_available) {
             return back()->withErrors(['menu' => 'Menu tidak tersedia.']);
         }
 
-        $cart = session('cart', []);
-        $key  = $menu->id;
+        $sessionId = $this->sessionId($request);
 
-        if (isset($cart[$key])) {
-            $cart[$key]['quantity'] = min($cart[$key]['quantity'] + $request->quantity, 99);
-        } else {
-            $cart[$key] = [
-                'menu_id'  => $menu->id,
-                'name'     => $menu->name,
-                'price'    => (float) $menu->price,
-                'image'    => $menu->image,
-                'quantity' => $request->quantity,
-            ];
-        }
+        // firstOrCreate with quantity=0 so the increment always works correctly
+        $item = CartItem::firstOrCreate(
+            ['session_id' => $sessionId, 'menu_id' => $menu->id],
+            ['quantity'   => 0]
+        );
 
-        session(['cart' => $cart]);
+        $item->quantity = min($item->quantity + $request->quantity, 99);
+        $item->save();
 
         return back();
     }
@@ -57,13 +76,11 @@ class CartController extends Controller
             'quantity' => 'required|integer|min:1|max:99',
         ]);
 
-        $cart = session('cart', []);
-        $key  = $request->menu_id;
+        $sessionId = $this->sessionId($request);
 
-        if (isset($cart[$key])) {
-            $cart[$key]['quantity'] = $request->quantity;
-            session(['cart' => $cart]);
-        }
+        CartItem::where('session_id', $sessionId)
+            ->where('menu_id', $request->menu_id)
+            ->update(['quantity' => $request->quantity]);
 
         return back();
     }
@@ -74,16 +91,20 @@ class CartController extends Controller
             'menu_id' => 'required|integer',
         ]);
 
-        $cart = session('cart', []);
-        unset($cart[$request->menu_id]);
-        session(['cart' => $cart]);
+        $sessionId = $this->sessionId($request);
+
+        CartItem::where('session_id', $sessionId)
+            ->where('menu_id', $request->menu_id)
+            ->delete();
 
         return back();
     }
 
-    public function clear()
+    public function clear(Request $request)
     {
-        session()->forget('cart');
+        $sessionId = $this->sessionId($request);
+
+        CartItem::where('session_id', $sessionId)->delete();
 
         return back();
     }

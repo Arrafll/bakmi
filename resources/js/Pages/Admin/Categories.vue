@@ -1,5 +1,5 @@
 <template>
-  <AdminLayout title="Master Kategori">
+  <AdminLayout title="Data Kategori">
     <!-- Header bar -->
     <div class="flex items-center justify-between mb-6">
       <p class="text-sm text-gray-500">{{ categories.length }} kategori terdaftar</p>

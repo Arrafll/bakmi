@@ -2,6 +2,7 @@
 
 namespace App\Http\Middleware;
 
+use App\Http\Controllers\CartController;
 use Illuminate\Http\Request;
 use Inertia\Middleware;
 use Tighten\Ziggy\Ziggy;
@@ -36,7 +37,8 @@ class HandleInertiaRequests extends Middleware
      */
     public function share(Request $request): array
     {
-        $cart      = session('cart', []);
+        $sessionId = $request->session()->get('table.session_id');
+        $cart      = $sessionId ? CartController::cartForSession($sessionId) : [];
         $cartCount = array_sum(array_column($cart, 'quantity'));
 
         return [

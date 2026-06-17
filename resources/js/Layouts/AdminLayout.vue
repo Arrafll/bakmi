@@ -97,11 +97,11 @@ const menus = [
         icon: HomeIcon,
         route: 'admin.dashboard',
     },
-    // {
-    //     label: 'Pesanan',
-    //     icon: ClipboardDocumentListIcon,
-    //     route: 'admin.orders.index',
-    // },
+    {
+        label: 'Pesanan',
+        icon: ClipboardDocumentListIcon,
+        route: 'admin.orders.index',
+    },
     {
         label: 'Data Kategori',
         icon: TagIcon,
