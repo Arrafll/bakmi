@@ -149,6 +149,7 @@ import { ref, computed } from 'vue'
 import { router, usePage } from '@inertiajs/vue3'
 import { route } from 'ziggy-js'
 import AdminLayout from '@/Layouts/AdminLayout.vue'
+import { useFormat } from '@/composables/useFormat'
 
 const props = defineProps({
   menus: { type: Array, default: () => [] },
@@ -158,6 +159,7 @@ const props = defineProps({
 const page = usePage()
 const flash = computed(() => page.props.flash ?? {})
 const errors = computed(() => page.props.errors ?? {})
+const { formatPrice } = useFormat()
 const submitting = ref(false)
 const deleteTarget = ref(null)
 
@@ -172,10 +174,6 @@ const emptyForm = () => ({
 
 const form = ref(emptyForm())
 const modal = ref({ open: false, isEdit: false, editId: null })
-
-function formatPrice(v) {
-  return new Intl.NumberFormat('id-ID', { style: 'currency', currency: 'IDR', minimumFractionDigits: 0 }).format(v)
-}
 
 function openCreate() {
   form.value = emptyForm()

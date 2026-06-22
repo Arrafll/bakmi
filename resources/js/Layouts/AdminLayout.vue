@@ -60,19 +60,30 @@
                 </div>
             </header>
 
-            <!-- Page content -->
-            <main class="flex-1 p-6 overflow-auto">
-                <slot />
-            </main>
+        <!-- Page content -->
+        <main class="flex-1 p-6 overflow-auto">
+            <slot />
+        </main>
+
+        <!-- Order Notification Toast -->
+        <OrderNotification ref="orderNotification" />
+
+        <!-- Debug Pusher Status (remove in production) -->
+        <div v-if="false" class="fixed bottom-4 left-4 bg-black text-white text-xs p-2 rounded z-50">
+            Pusher: {{ pusherConnected ? 'Connected' : 'Disconnected' }}
+        </div>
         </div>
     </div>
 </template>
 
 <script setup>
-import { ref } from 'vue'
+import { ref, onMounted, onUnmounted } from 'vue'
 import { Link, router, usePage } from '@inertiajs/vue3'
 import { route } from 'ziggy-js'
+import { computed } from 'vue'
 import { HomeIcon, ClipboardDocumentListIcon, TicketIcon, QrCodeIcon, TagIcon } from '@heroicons/vue/24/outline'
+import OrderNotification from '@/Components/OrderNotification.vue'
+import Pusher from 'pusher-js'
 
 defineProps({
     title: {
@@ -83,12 +94,85 @@ defineProps({
 
 const page = usePage()
 const user = page.props.auth?.user ?? { name: 'Admin' }
+const pusherConfig = page.props.pusher || {}
 
 const sidebarOpen = ref(false)
+const orderNotification = ref(null)
+let pusher = null
+let channel = null
+const pusherConnected = ref(false)
 
 function logout() {
     router.post(route('admin.logout'))
 }
+
+function initPusher() {
+    try {
+        if (!pusherConfig.key) {
+            console.warn('Pusher key not configured')
+            return
+        }
+
+        pusher = new Pusher(pusherConfig.key, {
+            cluster: pusherConfig.cluster || 'ap1',
+            forceTLS: true,
+        })
+
+        console.log('Pusher initialized')
+
+        pusher.connection.bind('connected', () => {
+            console.log('Pusher connected')
+            pusherConnected.value = true
+        })
+
+        pusher.connection.bind('disconnected', () => {
+            console.log('Pusher disconnected')
+            pusherConnected.value = false
+        })
+
+        pusher.connection.bind('error', (err) => {
+            console.error('Pusher connection error:', err)
+        })
+
+        channel = pusher.subscribe('admin-notifications')
+        console.log('Subscribed to admin-notifications channel')
+
+        channel.bind('new-order', (data) => {
+            console.log('Received new-order event:', data)
+            if (orderNotification.value && data.order) {
+                orderNotification.value.showNotification(data.order)
+
+                // Auto-refresh if currently on orders page
+                const currentPath = window.location.pathname
+                if (currentPath.includes('/admin/orders')) {
+                    setTimeout(() => {
+                        router.reload({ only: ['orders'] })
+                    }, 2000)
+                }
+            }
+        })
+
+        channel.bind('pusher:subscription_error', (err) => {
+            console.error('Channel subscription error:', err)
+        })
+    } catch (error) {
+        console.error('Failed to initialize Pusher:', error)
+    }
+}
+
+onMounted(() => {
+    initPusher()
+})
+
+onUnmounted(() => {
+    if (channel) {
+        channel.unbind('new-order')
+        pusher.unsubscribe('admin-notifications')
+    }
+    if (pusher) {
+        pusher.disconnect()
+    }
+})
 
 
 const menus = [

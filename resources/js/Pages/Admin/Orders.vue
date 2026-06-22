@@ -53,9 +53,7 @@
               </td>
               <td class="px-5 py-3 font-medium text-gray-700">{{ formatPrice(order.total_price) }}</td>
               <td class="px-5 py-3">
-                <span :class="statusClass(order.status)" class="px-2 py-0.5 rounded-full text-xs font-semibold">
-                  {{ statusLabel(order.status) }}
-                </span>
+                <StatusBadge :status="order.status" />
               </td>
               <td class="px-5 py-3 text-gray-500 text-xs">{{ formatDate(order.created_at) }}</td>
               <td class="px-5 py-3 text-center space-x-2">
@@ -85,9 +83,7 @@
               <h3 class="text-lg font-semibold text-gray-800">Detail Pesanan #{{ detailOrder.id }}</h3>
               <p class="text-xs text-gray-400 mt-0.5">{{ detailOrder.customer_name }} · {{ detailOrder.table?.name ?? 'Tanpa meja' }}</p>
             </div>
-            <span :class="statusClass(detailOrder.status)" class="px-2 py-0.5 rounded-full text-xs font-semibold">
-              {{ statusLabel(detailOrder.status) }}
-            </span>
+            <StatusBadge :status="detailOrder.status" />
           </div>
 
           <div class="p-6 space-y-4">
@@ -184,6 +180,8 @@ import { ref, computed } from 'vue'
 import { router, usePage } from '@inertiajs/vue3'
 import { route } from 'ziggy-js'
 import AdminLayout from '@/Layouts/AdminLayout.vue'
+import StatusBadge from '@/Components/StatusBadge.vue'
+import { useFormat } from '@/composables/useFormat'
 
 const props = defineProps({
   orders: { type: Array, default: () => [] },
@@ -191,6 +189,7 @@ const props = defineProps({
 
 const page = usePage()
 const flash = computed(() => page.props.flash ?? {})
+const { formatPrice, formatDate } = useFormat()
 
 const statuses = ['dipesan', 'diproses', 'selesai', 'dibatalkan']
 const activeFilter = ref('all')
@@ -224,14 +223,6 @@ function statusBorderClass(s) {
     selesai:    'border-green-400',
     dibatalkan: 'border-red-400',
   }[s] ?? 'border-gray-300'
-}
-
-function formatPrice(n) {
-  return new Intl.NumberFormat('id-ID', { style: 'currency', currency: 'IDR', minimumFractionDigits: 0 }).format(n)
-}
-
-function formatDate(d) {
-  return new Date(d).toLocaleString('id-ID', { day: '2-digit', month: 'short', year: 'numeric', hour: '2-digit', minute: '2-digit' })
 }
 
 function openDetail(order) {

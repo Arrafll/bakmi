@@ -12,7 +12,6 @@ return Application::configure(basePath: dirname(__DIR__))
     )
     ->withMiddleware(function (Middleware $middleware) {
         $middleware->trustProxies(['*']);
-        $middleware->redirectGuestsTo(fn() => route('admin.login'));
         $middleware->web(append: [
             \App\Http\Middleware\HandleInertiaRequests::class,
         ]);

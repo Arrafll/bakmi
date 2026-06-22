@@ -2,15 +2,14 @@
     <AdminLayout title="Dashboard">
         <!-- Stat Cards -->
         <div class="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-4 gap-5 mb-8">
-            <div v-for="item in statItems" :key="item.label" class="flex items-center gap-3">
-                <div :class="['p-2 rounded-lg text-white', item.color]">
-                    <component :is="item.icon" class="w-5 h-5" />
-                </div>
-                <div>
-                    <p class="text-sm text-gray-500">{{ item.label }}</p>
-                    <p class="text-lg font-semibold">{{ item.value }}</p>
-                </div>
-            </div>
+            <StatCard
+                v-for="item in statItems"
+                :key="item.label"
+                :icon="item.icon"
+                :label="item.label"
+                :value="item.value"
+                :color="item.color"
+            />
         </div>
 
         <!-- Charts row -->
@@ -76,12 +75,7 @@
                                 <span v-else class="text-gray-300">—</span>
                             </td>
                             <td class="px-6 py-3">
-                                <span :class="[
-                                    'px-2 py-0.5 rounded-full text-xs font-medium',
-                                    (STATUS_MAP[order.status] ?? defaultStatus).cls
-                                ]">
-                                    {{ (STATUS_MAP[order.status] ?? defaultStatus).label }}
-                                </span>
+                                <StatusBadge :status="order.status" />
                             </td>
                             <td class="px-6 py-3 text-gray-500 text-xs">{{ order.created_at }}</td>
                         </tr>
@@ -98,6 +92,9 @@
 <script setup>
 import AdminLayout from '@/Layouts/AdminLayout.vue'
 import { ShoppingCartIcon, CurrencyDollarIcon, ClipboardDocumentListIcon, TicketIcon } from '@heroicons/vue/24/outline'
+import StatusBadge from '@/Components/StatusBadge.vue'
+import StatCard from '@/Components/StatCard.vue'
+import { useFormat } from '@/composables/useFormat'
 
 const props = defineProps({
     stats: {
@@ -114,6 +111,8 @@ const props = defineProps({
         default: () => []
     },
 })
+
+const { formatPrice } = useFormat()
 
 const weeklyOrders = [
     { day: 'Sen', count: 12 },
@@ -133,34 +132,10 @@ const categoryData = [
     { label: 'Paket', percent: 10, color: 'bg-purple-400' },
 ]
 
-function formatPrice(v) {
-    return new Intl.NumberFormat('id-ID', { style: 'currency', currency: 'IDR', minimumFractionDigits: 0 }).format(v)
-}
-
 const statItems = [
     { icon: ShoppingCartIcon, label: 'Pesanan Hari Ini', value: props.stats.orders_today, color: 'bg-blue-500' },
     { icon: CurrencyDollarIcon, label: 'Pendapatan Hari Ini', value: formatPrice(props.stats.revenue_today), color: 'bg-green-500' },
     { icon: ClipboardDocumentListIcon, label: 'Total Menu Aktif', value: props.stats.active_menus, color: 'bg-amber-500' },
     { icon: TicketIcon, label: 'Voucher Aktif', value: props.stats.active_vouchers, color: 'bg-purple-500' },
 ]
-
-const STATUS_MAP = {
-    pending: { label: 'Pending', cls: 'bg-yellow-100 text-yellow-700' },
-    processing: { label: 'Diproses', cls: 'bg-blue-100 text-blue-700' },
-    completed: { label: 'Selesai', cls: 'bg-green-100 text-green-700' },
-    cancelled: { label: 'Dibatal', cls: 'bg-red-100 text-red-700' },
-}
-const StatusBadge = {
-    props: ['status'],
-    setup(props) {
-        const info = () => STATUS_MAP[props.status] ?? { label: props.status, cls: 'bg-gray-100 text-gray-600' }
-        return { info }
-    },
-    template: `<span :class="['px-2 py-0.5 rounded-full text-xs font-medium', info().cls]">{{ info().label }}</span>`,
-}
-
-const defaultStatus = {
-    label: 'Unknown',
-    cls: 'bg-gray-100 text-gray-600',
-}
 </script>

@@ -115,6 +115,7 @@ import { ref } from 'vue'
 import { router } from '@inertiajs/vue3'
 import { route } from 'ziggy-js'
 import { ShoppingCartIcon } from '@heroicons/vue/24/outline'
+import { useFormat } from '@/composables/useFormat'
 
 const props = defineProps({
   item: {
@@ -123,17 +124,11 @@ const props = defineProps({
   },
 })
 
+const { formatPrice } = useFormat()
+
 const ordering = ref(false)
 const quantity = ref(1)
 const adding = ref(false)
-
-function formatPrice(price) {
-  return new Intl.NumberFormat('id-ID', {
-    style: 'currency',
-    currency: 'IDR',
-    minimumFractionDigits: 0,
-  }).format(price)
-}
 
 function decrease() {
   if (quantity.value > 1) quantity.value--
