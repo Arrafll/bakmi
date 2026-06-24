@@ -12,7 +12,7 @@
                 </h1>
 
                 <p class="text-amber-600 mt-1 text-sm">
-                    Masuk untuk mengelola menu
+                    Masuk untuk mengelola restoran bakmi
                 </p>
             </div>
 

@@ -37,8 +37,8 @@
               <!-- Thumbnail -->
               <div class="w-16 h-16 rounded-xl overflow-hidden bg-amber-100 flex-shrink-0">
                 <img
-                  v-if="item.image"
-                  :src="item.image"
+                  v-if="item.image_path"
+                  :src="'/storage/' + item.image_path"
                   :alt="item.name"
                   class="w-full h-full object-cover"
                 />

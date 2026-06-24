@@ -111,7 +111,7 @@ class AdminController extends Controller
             'description' => 'nullable|string|max:500',
             'price' => 'required|numeric|min:0',
             'category' => 'required|string|max:100|exists:categories,name',
-            'image' => 'nullable|url|max:500',
+            'image' => 'nullable|image|mimes:jpeg,png,jpg,gif,webp|max:2048',
             'is_available' => 'boolean',
         ]);
 
@@ -127,7 +127,7 @@ class AdminController extends Controller
             'description' => 'nullable|string|max:500',
             'price' => 'required|numeric|min:0',
             'category' => 'required|string|max:100|exists:categories,name',
-            'image' => 'nullable|url|max:500',
+            'image' => 'nullable|image|mimes:jpeg,png,jpg,gif,webp|max:2048',
             'is_available' => 'boolean',
         ]);
 

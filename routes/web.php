@@ -12,7 +12,7 @@ use Inertia\Inertia;
 Route::get('/', function () {
     $company = [
         'name' => 'Bakmi Jawa Mas Agus',
-        'tagline' => 'Sajian lezat pilihan kami',
+        'tagline' => 'Masakan Tulus, Rasane Nyess Tenan',
         'description' => 'Bakmi Jawa Mas Agus adalah rumah makan keluarga yang menyajikan bakmi tradisional dengan resep turun-temurun. Kami menggunakan bahan segar dan teknik memasak yang menjaga cita rasa otentik.',
         'address' => 'Jl. Contoh No.123, Kota Contoh',
         'phone' => '0812-3456-7890',

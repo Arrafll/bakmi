@@ -12,7 +12,7 @@ defineProps({
   },
   tagline: {
     type: String,
-    default: 'Made by dreowsy',
+    default: 'Made by Team 7',
   },
 })
 

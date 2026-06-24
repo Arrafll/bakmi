@@ -10,7 +10,7 @@ class Menu extends Model
         'name',
         'description',
         'price',
-        'image',
+        'image_path',
         'category',
         'is_available',
     ];

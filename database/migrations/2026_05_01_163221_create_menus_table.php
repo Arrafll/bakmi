@@ -16,10 +16,10 @@ return new class extends Migration
             $table->string('name');
             $table->text('description')->nullable();
             $table->decimal('price', 10, 2);
-            $table->string('image')->nullable();
+            $table->string('image_path')->nullable();
             $table->string('category')->default('main');
             $table->boolean('is_available')->default(true);
-            $table->foreignId('category_id')->nullable();
+            $table->foreignId('category_id')->nullable()->constrained()->nullOnDelete();
             $table->softDeletes();
             $table->timestamps();
         });

@@ -5,8 +5,8 @@
     <!-- Image -->
     <div class="relative overflow-hidden h-52 bg-amber-100">
       <img
-        v-if="item.image"
-        :src="item.image"
+        v-if="item.image_path"
+        :src="'/storage/' + item.image_path"
         :alt="item.name"
         class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
       />

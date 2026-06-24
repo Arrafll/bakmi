@@ -44,7 +44,7 @@ class TableQrController extends Controller
                 ],
                 'menus'      => Menu::orderBy('category')
                     ->orderBy('name')
-                    ->get(['id', 'name', 'description', 'price', 'category', 'image', 'is_available']),
+                    ->get(['id', 'name', 'description', 'price', 'category', 'image_path', 'is_available']),
                 'categories' => Category::orderBy('name')->pluck('name'),
             ]);
         }
@@ -78,7 +78,7 @@ class TableQrController extends Controller
             ],
             'menus'      => Menu::orderBy('category')
                 ->orderBy('name')
-                ->get(['id', 'name', 'description', 'price', 'category', 'image', 'is_available']),
+                ->get(['id', 'name', 'description', 'price', 'category', 'image_path', 'is_available']),
             'categories' => Category::orderBy('name')->pluck('name'),
         ]);
     }

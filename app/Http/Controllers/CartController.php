@@ -19,7 +19,7 @@ class CartController extends Controller
     /** Return cart rows for the current session as a plain array. */
     public static function cartForSession(string $sessionId): array
     {
-        return CartItem::with('menu:id,name,price,image,is_available')
+        return CartItem::with('menu:id,name,price,image_path,is_available')
             ->where('session_id', $sessionId)
             ->get()
             ->map(fn ($row) => [

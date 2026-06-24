@@ -31,7 +31,7 @@
             <tr v-for="menu in menus" :key="menu.id" class="hover:bg-gray-50 transition-colors">
               <td class="px-5 py-3">
                 <div class="w-12 h-12 rounded-xl overflow-hidden bg-amber-100 flex items-center justify-center text-xl flex-shrink-0">
-                  <img v-if="menu.image" :src="menu.image" :alt="menu.name" class="w-full h-full object-cover" />
+                  <img v-if="menu.image_path" :src="'/storage/' + menu.image_path" :alt="menu.name" class="w-full h-full object-cover" />
                   <span v-else>🍜</span>
                 </div>
               </td>
@@ -104,8 +104,12 @@
             </div>
 
             <div>
-              <label class="block text-sm font-medium text-gray-700 mb-1">URL Gambar</label>
-              <input v-model="form.image" type="url" class="input w-full border border-gray-300 rounded-xl px-4 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-amber-500 transition" placeholder="https://example.com/image.jpg" />
+              <label class="block text-sm font-medium text-gray-700 mb-1">Gambar Menu</label>
+              <input @input="onImageSelect" type="file" accept="image/*" class="input w-full border border-gray-300 rounded-xl px-4 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-amber-500 transition" />
+              <div v-if="imagePreview" class="mt-2">
+                <img :src="imagePreview" alt="Preview" class="w-20 h-20 object-cover rounded-xl" />
+              </div>
+              <button v-if="form.image" type="button" @click="removeImage" class="mt-1 text-xs text-red-500 hover:text-red-700">Hapus gambar</button>
             </div>
 
             <div class="flex items-center gap-3">
@@ -168,11 +172,12 @@ const emptyForm = () => ({
   description: '',
   price: '',
   category: '',
-  image: '',
+  image: null,
   is_available: true,
 })
 
 const form = ref(emptyForm())
+const imagePreview = ref(null)
 const modal = ref({ open: false, isEdit: false, editId: null })
 
 function openCreate() {
@@ -186,21 +191,45 @@ function openEdit(menu) {
     description: menu.description ?? '',
     price: menu.price,
     category: menu.category,
-    image: menu.image ?? '',
+    image: null,
     is_available: !!menu.is_available,
   }
+  imagePreview.value = menu.image_path ? '/storage/' + menu.image_path : null
   modal.value = { open: true, isEdit: true, editId: menu.id }
+}
+
+function onImageSelect(e) {
+  const file = e.target.files[0]
+  if (file) {
+    form.value.image = file
+    imagePreview.value = URL.createObjectURL(file)
+  }
+}
+
+function removeImage() {
+  form.value.image = null
+  imagePreview.value = null
 }
 
 function submitForm() {
   submitting.value = true
+  const data = new FormData()
+  data.append('name', form.value.name)
+  data.append('description', form.value.description)
+  data.append('price', form.value.price)
+  data.append('category', form.value.category)
+  data.append('is_available', form.value.is_available ? '1' : '0')
+  if (form.value.image) {
+    data.append('image', form.value.image)
+  }
+
   if (modal.value.isEdit) {
-    router.put(route('admin.menus.update', modal.value.editId), form.value, {
-      onFinish: () => { submitting.value = false; modal.value.open = false },
+    router.put(route('admin.menus.update', modal.value.editId), data, {
+      onFinish: () => { submitting.value = false; modal.value.open = false; imagePreview.value = null },
     })
   } else {
-    router.post(route('admin.menus.store'), form.value, {
-      onFinish: () => { submitting.value = false; modal.value.open = false },
+    router.post(route('admin.menus.store'), data, {
+      onFinish: () => { submitting.value = false; modal.value.open = false; imagePreview.value = null },
     })
   }
 }
