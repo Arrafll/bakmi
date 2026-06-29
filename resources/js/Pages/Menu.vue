@@ -1,7 +1,5 @@
 <template>
-  <div class="min-h-screen bg-amber-50">
-    <AppHeader title="" subtitle="Sajian lezat pilihan kami" />
-
+  <CustomerLayout title="" subtitle="Sajian lezat pilihan kami">
     <div class="max-w-6xl mx-auto px-4 mt-8">
       <CategoryFilter :categories="categoryList" v-model="activeCategory" />
     </div>
@@ -19,14 +17,12 @@
         <p class="text-xl">Tidak ada menu di kategori ini.</p>
       </div>
     </main>
-
-    <AppFooter />
-  </div>
+</CustomerLayout>
 </template>
 
 <script setup>
 import { ref, computed } from 'vue'
-import AppHeader from '@/Components/AppHeader.vue'
+import CustomerLayout from '@/Layouts/CustomerLayout.vue'
 import AppFooter from '@/Components/AppFooter.vue'
 import MenuCard from '@/Components/MenuCard.vue'
 import CategoryFilter from '@/Components/CategoryFilter.vue'

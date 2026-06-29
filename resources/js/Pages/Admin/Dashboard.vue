@@ -14,7 +14,7 @@
 
         <!-- Charts row -->
         <div class="grid grid-cols-1 lg:grid-cols-2 gap-5 mb-8">
-            <!-- Weekly orders bar chart (hardcoded demo) -->
+            <!-- Weekly orders bar chart -->
             <div class="bg-white rounded-2xl shadow-sm p-6">
                 <h2 class="text-base font-semibold text-gray-700 mb-5">Pesanan 7 Hari Terakhir</h2>
                 <div class="flex items-end gap-2 h-32">
@@ -27,11 +27,14 @@
                 </div>
             </div>
 
-            <!-- Category distribution (hardcoded demo) -->
+            <!-- Favorite menus -->
             <div class="bg-white rounded-2xl shadow-sm p-6">
-                <h2 class="text-base font-semibold text-gray-700 mb-4">Distribusi Kategori Menu</h2>
-                <div class="space-y-3">
-                    <div v-for="(c, i) in categoryData" :key="i">
+                <h2 class="text-base font-semibold text-gray-700 mb-4">Menu Favorit</h2>
+                <div v-if="favoriteMenus.length === 0" class="py-8 text-center text-gray-400 text-sm">
+                    Belum ada data pesanan
+                </div>
+                <div v-else class="space-y-3">
+                    <div v-for="(c, i) in favoriteMenus" :key="i">
                         <div class="flex justify-between text-sm mb-1">
                             <span class="text-gray-700">{{ c.label }}</span>
                             <span class="text-gray-400 font-medium">{{ c.percent }}%</span>
@@ -91,7 +94,7 @@
 
 <script setup>
 import AdminLayout from '@/Layouts/AdminLayout.vue'
-import { ShoppingCartIcon, CurrencyDollarIcon, ClipboardDocumentListIcon, TicketIcon } from '@heroicons/vue/24/outline'
+import { ShoppingCartIcon, ClipboardDocumentCheckIcon, ClipboardDocumentListIcon, TicketIcon } from '@heroicons/vue/24/outline'
 import StatusBadge from '@/Components/StatusBadge.vue'
 import StatCard from '@/Components/StatCard.vue'
 import { useFormat } from '@/composables/useFormat'
@@ -101,7 +104,7 @@ const props = defineProps({
         type: Object,
         default: () => ({
             orders_today: 0,
-            revenue_today: 0,
+            completed_orders_today: 0,
             active_menus: 0,
             active_vouchers: 0
         }),
@@ -110,31 +113,26 @@ const props = defineProps({
         type: Array,
         default: () => []
     },
+    weeklyOrders: {
+        type: Array,
+        default: () => []
+    },
+    favoriteMenus: {
+        type: Array,
+        default: () => []
+    },
 })
 
 const { formatPrice } = useFormat()
 
-const weeklyOrders = [
-    { day: 'Sen', count: 12 },
-    { day: 'Sel', count: 18 },
-    { day: 'Rab', count: 9 },
-    { day: 'Kam', count: 22 },
-    { day: 'Jum', count: 30 },
-    { day: 'Sab', count: 25 },
-    { day: 'Min', count: 14 },
-]
-const maxWeekly = Math.max(...weeklyOrders.map(d => d.count))
+const weeklyOrders = props.weeklyOrders
+const maxWeekly = weeklyOrders.length > 0 ? Math.max(...weeklyOrders.map(d => d.count)) : 0
 
-const categoryData = [
-    { label: 'Bakmi', percent: 45, color: 'bg-amber-500' },
-    { label: 'Minuman', percent: 25, color: 'bg-blue-400' },
-    { label: 'Snack', percent: 20, color: 'bg-green-400' },
-    { label: 'Paket', percent: 10, color: 'bg-purple-400' },
-]
+const favoriteMenus = props.favoriteMenus
 
 const statItems = [
     { icon: ShoppingCartIcon, label: 'Pesanan Hari Ini', value: props.stats.orders_today, color: 'bg-blue-500' },
-    { icon: CurrencyDollarIcon, label: 'Pendapatan Hari Ini', value: formatPrice(props.stats.revenue_today), color: 'bg-green-500' },
+    { icon: ClipboardDocumentCheckIcon, label: 'Pesanan Selesai', value: props.stats.completed_orders_today, color: 'bg-green-500' },
     { icon: ClipboardDocumentListIcon, label: 'Total Menu Aktif', value: props.stats.active_menus, color: 'bg-amber-500' },
     { icon: TicketIcon, label: 'Voucher Aktif', value: props.stats.active_vouchers, color: 'bg-purple-500' },
 ]

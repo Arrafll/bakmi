@@ -1,7 +1,5 @@
 <template>
-  <div class="min-h-screen bg-amber-50">
-    <AppHeader title="✅ Pesanan Berhasil" />
-
+  <CustomerLayout title="✅ Pesanan Berhasil">
     <main class="max-w-2xl mx-auto px-4 py-10">
       <div class="bg-white rounded-2xl shadow-md p-8">
         <!-- Success header -->
@@ -69,14 +67,12 @@
         </Link>
       </div>
     </main>
-
-    <AppFooter />
-  </div>
+</CustomerLayout>
 </template>
 
 <script setup>
 import { Link } from '@inertiajs/vue3'
-import AppHeader from '@/Components/AppHeader.vue'
+import CustomerLayout from '@/Layouts/CustomerLayout.vue'
 import AppFooter from '@/Components/AppFooter.vue'
 
 const props = defineProps({

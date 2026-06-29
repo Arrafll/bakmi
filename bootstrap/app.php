@@ -19,6 +19,7 @@ return Application::configure(basePath: dirname(__DIR__))
         // Named middleware alias for route-level use
         $middleware->alias([
             'table.session' => \App\Http\Middleware\EnsureTableSession::class,
+            'admin.auth' => \App\Http\Middleware\AdminAuthenticate::class,
         ]);
     })
     ->withExceptions(function (Exceptions $exceptions) {

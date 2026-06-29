@@ -1,7 +1,5 @@
 <template>
-  <div class="min-h-screen bg-amber-50">
-    <AppHeader title="Keranjang" subtitle="Periksa pesanan Anda" />
-
+  <CustomerLayout title="Keranjang" subtitle="Periksa pesanan Anda">
     <main class="max-w-4xl mx-auto px-4 py-10">
       <!-- Empty cart -->
       <div v-if="cart.length === 0" class="text-center py-20 text-gray-400">
@@ -182,16 +180,14 @@
         </div>
       </div>
     </main>
-
-    <AppFooter />
-  </div>
+</CustomerLayout>
 </template>
 
 <script setup>
 import { ref, computed } from 'vue'
 import { Link, router, usePage } from '@inertiajs/vue3'
 import { route } from 'ziggy-js'
-import AppHeader from '@/Components/AppHeader.vue'
+import CustomerLayout from '@/Layouts/CustomerLayout.vue'
 import AppFooter from '@/Components/AppFooter.vue'
 
 const props = defineProps({

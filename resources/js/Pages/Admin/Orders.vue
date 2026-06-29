@@ -2,12 +2,12 @@
   <AdminLayout title="Manajemen Pesanan">
     <!-- Header -->
     <div class="flex items-center justify-between mb-6">
-      <p class="text-sm text-gray-500">{{ orders.length }} pesanan</p>
+      <p class="text-sm text-gray-500">{{ orders.total }} pesanan</p>
       <!-- Filter by status -->
       <div class="flex gap-2 flex-wrap">
         <button
           v-for="s in ['all', ...statuses]" :key="s"
-          @click="activeFilter = s"
+          @click="activeFilter = s; currentPage = 1"
           :class="[
             'px-3 py-1.5 rounded-full text-xs font-semibold transition-colors',
             activeFilter === s
@@ -16,7 +16,7 @@
           ]"
         >
           {{ s === 'all' ? 'Semua' : statusLabel(s) }}
-          <span class="ml-1 opacity-70">({{ s === 'all' ? orders.length : orders.filter(o => o.status === s).length }})</span>
+          <span class="ml-1 opacity-70">({{ s === 'all' ? orders.total : statusCounts[s] || 0 }})</span>
         </button>
       </div>
     </div>
@@ -70,6 +70,43 @@
             </tr>
           </tbody>
         </table>
+      </div>
+
+      <!-- Pagination -->
+      <div v-if="orders.last_page > 1" class="px-5 py-4 border-t border-gray-100 flex items-center justify-between">
+        <p class="text-sm text-gray-500">
+          Menampilkan {{ orders.from }} - {{ orders.to }} dari {{ orders.total }} pesanan
+        </p>
+        <div class="flex gap-2">
+          <button
+            @click="goToPage(orders.current_page - 1)"
+            :disabled="orders.current_page === 1"
+            class="px-3 py-1.5 border border-gray-300 rounded-lg text-sm disabled:opacity-50 disabled:cursor-not-allowed hover:bg-gray-50 transition-colors"
+          >
+            Sebelumnya
+          </button>
+          <button
+            v-for="page in visiblePages" :key="page"
+            @click="goToPage(page)"
+            :class="[
+              'px-3 py-1.5 rounded-lg text-sm font-medium transition-colors',
+              page === orders.current_page
+                ? 'bg-amber-700 text-white'
+                : 'border border-gray-300 hover:bg-gray-50',
+              page === '...' ? 'cursor-default border-none hover:bg-transparent' : ''
+            ]"
+            :disabled="page === '...'"
+          >
+            {{ page }}
+          </button>
+          <button
+            @click="goToPage(orders.current_page + 1)"
+            :disabled="orders.current_page === orders.last_page"
+            class="px-3 py-1.5 border border-gray-300 rounded-lg text-sm disabled:opacity-50 disabled:cursor-not-allowed hover:bg-gray-50 transition-colors"
+          >
+            Selanjutnya
+          </button>
+        </div>
       </div>
     </div>
 
@@ -184,7 +221,7 @@ import StatusBadge from '@/Components/StatusBadge.vue'
 import { useFormat } from '@/composables/useFormat'
 
 const props = defineProps({
-  orders: { type: Array, default: () => [] },
+  orders: { type: Object, default: () => ({ data: [], total: 0, current_page: 1, last_page: 1, per_page: 10, from: 0, to: 0 }) },
 })
 
 const page = usePage()
@@ -198,10 +235,47 @@ const statusTarget = ref(null)
 const selectedStatus = ref('')
 const submitting = ref(false)
 
-const filteredOrders = computed(() => {
-  if (activeFilter.value === 'all') return props.orders
-  return props.orders.filter(o => o.status === activeFilter.value)
+const statusCounts = computed(() => {
+  const counts = { all: props.orders.total }
+  statuses.forEach(s => {
+    counts[s] = props.orders.data.filter(o => o.status === s).length
+  })
+  return counts
 })
+
+const filteredOrders = computed(() => {
+  if (activeFilter.value === 'all') return props.orders.data
+  return props.orders.data.filter(o => o.status === activeFilter.value)
+})
+
+const visiblePages = computed(() => {
+  const total = props.orders.last_page
+  const current = props.orders.current_page
+  const pages = []
+
+  if (total <= 7) {
+    for (let i = 1; i <= total; i++) pages.push(i)
+  } else {
+    pages.push(1)
+    if (current > 3) pages.push('...')
+
+    const start = Math.max(2, current - 1)
+    const end = Math.min(total - 1, current + 1)
+
+    for (let i = start; i <= end; i++) pages.push(i)
+
+    if (current < total - 2) pages.push('...')
+    pages.push(total)
+  }
+
+  return pages
+})
+
+function goToPage(page) {
+  if (page >= 1 && page <= props.orders.last_page) {
+    router.get(route('admin.orders.index'), { page: page }, { preserveState: true })
+  }
+}
 
 function statusLabel(s) {
   return { dipesan: 'Dipesan', diproses: 'Diproses', selesai: 'Selesai', dibatalkan: 'Dibatalkan' }[s] ?? s

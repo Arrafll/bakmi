@@ -2,7 +2,7 @@
   <AdminLayout title="Voucher Promo">
     <!-- Header bar -->
     <div class="flex items-center justify-between mb-6">
-      <p class="text-sm text-gray-500">{{ vouchers.length }} voucher terdaftar</p>
+      <p class="text-sm text-gray-500">{{ vouchers.total }} voucher terdaftar</p>
       <button @click="openCreate" class="bg-amber-700 hover:bg-amber-600 text-white text-sm font-semibold px-4 py-2 rounded-xl transition-colors flex items-center gap-2">
         <span class="text-base leading-none">+</span> Buat Voucher
       </button>
@@ -28,7 +28,7 @@
             </tr>
           </thead>
           <tbody class="divide-y divide-gray-100">
-            <tr v-for="v in vouchers" :key="v.id" class="hover:bg-gray-50 transition-colors">
+            <tr v-for="v in vouchers.data" :key="v.id" class="hover:bg-gray-50 transition-colors">
               <td class="px-5 py-3">
                 <span class="font-mono font-bold text-amber-700 tracking-wider">{{ v.code }}</span>
               </td>
@@ -57,11 +57,48 @@
                 <button @click="confirmDelete(v)" class="text-xs text-red-500 hover:text-red-700 font-medium transition-colors">Hapus</button>
               </td>
             </tr>
-            <tr v-if="vouchers.length === 0">
+            <tr v-if="vouchers.data.length === 0">
               <td colspan="8" class="px-5 py-10 text-center text-gray-400">Belum ada voucher. Klik "Buat Voucher" untuk memulai.</td>
             </tr>
           </tbody>
         </table>
+      </div>
+
+      <!-- Pagination -->
+      <div v-if="vouchers.last_page > 1" class="px-5 py-4 border-t border-gray-100 flex items-center justify-between">
+        <p class="text-sm text-gray-500">
+          Menampilkan {{ vouchers.from }} - {{ vouchers.to }} dari {{ vouchers.total }} voucher
+        </p>
+        <div class="flex gap-2">
+          <button
+            @click="goToPage(vouchers.current_page - 1)"
+            :disabled="vouchers.current_page === 1"
+            class="px-3 py-1.5 border border-gray-300 rounded-lg text-sm disabled:opacity-50 disabled:cursor-not-allowed hover:bg-gray-50 transition-colors"
+          >
+            Sebelumnya
+          </button>
+          <button
+            v-for="page in visiblePages" :key="page"
+            @click="goToPage(page)"
+            :class="[
+              'px-3 py-1.5 rounded-lg text-sm font-medium transition-colors',
+              page === vouchers.current_page
+                ? 'bg-amber-700 text-white'
+                : 'border border-gray-300 hover:bg-gray-50',
+              page === '...' ? 'cursor-default border-none hover:bg-transparent' : ''
+            ]"
+            :disabled="page === '...'"
+          >
+            {{ page }}
+          </button>
+          <button
+            @click="goToPage(vouchers.current_page + 1)"
+            :disabled="vouchers.current_page === vouchers.last_page"
+            class="px-3 py-1.5 border border-gray-300 rounded-lg text-sm disabled:opacity-50 disabled:cursor-not-allowed hover:bg-gray-50 transition-colors"
+          >
+            Selanjutnya
+          </button>
+        </div>
       </div>
     </div>
 
@@ -170,7 +207,7 @@ import AdminLayout from '@/Layouts/AdminLayout.vue'
 import { useFormat } from '@/composables/useFormat'
 
 defineProps({
-  vouchers: { type: Array, default: () => [] },
+  vouchers: { type: Object, default: () => ({ data: [], total: 0, current_page: 1, last_page: 1, per_page: 10, from: 0, to: 0 }) },
 })
 
 const page = usePage()
@@ -179,6 +216,35 @@ const errors = computed(() => page.props.errors ?? {})
 const { formatPrice } = useFormat()
 const submitting = ref(false)
 const deleteTarget = ref(null)
+
+const visiblePages = computed(() => {
+  const total = props.vouchers.last_page
+  const current = props.vouchers.current_page
+  const pages = []
+
+  if (total <= 7) {
+    for (let i = 1; i <= total; i++) pages.push(i)
+  } else {
+    pages.push(1)
+    if (current > 3) pages.push('...')
+
+    const start = Math.max(2, current - 1)
+    const end = Math.min(total - 1, current + 1)
+
+    for (let i = start; i <= end; i++) pages.push(i)
+
+    if (current < total - 2) pages.push('...')
+    pages.push(total)
+  }
+
+  return pages
+})
+
+function goToPage(page) {
+  if (page >= 1 && page <= props.vouchers.last_page) {
+    router.get(route('admin.vouchers.index'), { page: page }, { preserveState: true })
+  }
+}
 
 const emptyForm = () => ({
   code: '',

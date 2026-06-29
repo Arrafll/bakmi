@@ -12,7 +12,6 @@ return new class extends Migration
             $table->id();
             $table->string('name');                      // "Table 1", "VIP Room A"
             $table->string('qr_token', 64)->unique();   // secure random token, never in URL params
-            $table->string('branch')->default('main');  // multi-branch support
             $table->boolean('is_active')->default(true);
             $table->timestamps();
         });

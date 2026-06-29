@@ -2,7 +2,7 @@
   <AdminLayout title="Data Kategori">
     <!-- Header bar -->
     <div class="flex items-center justify-between mb-6">
-      <p class="text-sm text-gray-500">{{ categories.length }} kategori terdaftar</p>
+      <p class="text-sm text-gray-500">{{ categories.total }} kategori terdaftar</p>
       <button @click="openCreate" class="bg-amber-700 hover:bg-amber-600 text-white text-sm font-semibold px-4 py-2 rounded-xl transition-colors flex items-center gap-2">
         <span class="text-base leading-none">+</span> Tambah Kategori
       </button>
@@ -25,7 +25,7 @@
             </tr>
           </thead>
           <tbody class="divide-y divide-gray-100">
-            <tr v-for="cat in categories" :key="cat.id" class="hover:bg-gray-50 transition-colors">
+            <tr v-for="cat in categories.data" :key="cat.id" class="hover:bg-gray-50 transition-colors">
               <td class="px-5 py-3">
                 <span class="text-gray-500 text-base font-semibold">{{ cat.name }}</span>
               </td>
@@ -39,11 +39,48 @@
                 </button>
               </td>
             </tr>
-            <tr v-if="categories.length === 0">
+            <tr v-if="categories.data.length === 0">
               <td colspan="3" class="px-5 py-10 text-center text-gray-400">Belum ada kategori. Klik "Tambah Kategori" untuk mulai.</td>
             </tr>
           </tbody>
         </table>
+      </div>
+
+      <!-- Pagination -->
+      <div v-if="categories.last_page > 1" class="px-5 py-4 border-t border-gray-100 flex items-center justify-between">
+        <p class="text-sm text-gray-500">
+          Menampilkan {{ categories.from }} - {{ categories.to }} dari {{ categories.total }} kategori
+        </p>
+        <div class="flex gap-2">
+          <button
+            @click="goToPage(categories.current_page - 1)"
+            :disabled="categories.current_page === 1"
+            class="px-3 py-1.5 border border-gray-300 rounded-lg text-sm disabled:opacity-50 disabled:cursor-not-allowed hover:bg-gray-50 transition-colors"
+          >
+            Sebelumnya
+          </button>
+          <button
+            v-for="page in visiblePages" :key="page"
+            @click="goToPage(page)"
+            :class="[
+              'px-3 py-1.5 rounded-lg text-sm font-medium transition-colors',
+              page === categories.current_page
+                ? 'bg-amber-700 text-white'
+                : 'border border-gray-300 hover:bg-gray-50',
+              page === '...' ? 'cursor-default border-none hover:bg-transparent' : ''
+            ]"
+            :disabled="page === '...'"
+          >
+            {{ page }}
+          </button>
+          <button
+            @click="goToPage(categories.current_page + 1)"
+            :disabled="categories.current_page === categories.last_page"
+            class="px-3 py-1.5 border border-gray-300 rounded-lg text-sm disabled:opacity-50 disabled:cursor-not-allowed hover:bg-gray-50 transition-colors"
+          >
+            Selanjutnya
+          </button>
+        </div>
       </div>
     </div>
 
@@ -112,7 +149,7 @@ import { route } from 'ziggy-js'
 import AdminLayout from '@/Layouts/AdminLayout.vue'
 
 const props = defineProps({
-  categories: { type: Array, default: () => [] },
+  categories: { type: Object, default: () => ({ data: [], total: 0, current_page: 1, last_page: 1, per_page: 10, from: 0, to: 0 }) },
 })
 
 const page = usePage()
@@ -120,6 +157,35 @@ const flash = computed(() => page.props.flash ?? {})
 const errors = computed(() => page.props.errors ?? {})
 const submitting = ref(false)
 const deleteTarget = ref(null)
+
+const visiblePages = computed(() => {
+  const total = props.categories.last_page
+  const current = props.categories.current_page
+  const pages = []
+
+  if (total <= 7) {
+    for (let i = 1; i <= total; i++) pages.push(i)
+  } else {
+    pages.push(1)
+    if (current > 3) pages.push('...')
+
+    const start = Math.max(2, current - 1)
+    const end = Math.min(total - 1, current + 1)
+
+    for (let i = start; i <= end; i++) pages.push(i)
+
+    if (current < total - 2) pages.push('...')
+    pages.push(total)
+  }
+
+  return pages
+})
+
+function goToPage(page) {
+  if (page >= 1 && page <= props.categories.last_page) {
+    router.get(route('admin.categories.index'), { page: page }, { preserveState: true })
+  }
+}
 
 const form = ref({ name: '' })
 const modal = ref({ open: false, isEdit: false, editId: null })

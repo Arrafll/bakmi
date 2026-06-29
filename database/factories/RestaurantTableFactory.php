@@ -18,7 +18,6 @@ class RestaurantTableFactory extends Factory
         return [
             'name'      => 'Table ' . $counter,
             'qr_token'  => Str::random(40),
-            'branch'    => 'main',
             'is_active' => true,
         ];
     }

@@ -1,11 +1,13 @@
 <template>
+    <Head>
+        <link rel="icon" type="image/x-icon" :href="icon" />
+        <title>{{ title }} | Bakmi Jawa Mas Agus</title>
+    </Head>
     <header class="bg-amber-800 text-white shadow-lg">
-        <link rel="icon" type="image/jpeg" href="/images/logo.jpeg">
-            <title>{{ title }}</title>
-            <div class="max-w-6xl mx-auto px-4 py-3 flex items-center justify-between gap-4">
+        <div class="max-w-6xl mx-auto px-4 py-3 flex items-center justify-between gap-4">
                 <!-- Logo + subtitle -->
                 <div class="flex items-center gap-3 flex-1">
-                    <img :src="'/images/logo.jpeg'" alt="Bakmi Jawa Mas Agus"
+                    <img :src="logo" :alt="title"
                         class="h-16 w-16 object-contain rounded-full bg-white p-0.5 flex-shrink-0" />
                     <div>
                         <h1 class="text-xl font-bold leading-tight">{{ title }}</h1>
@@ -30,6 +32,7 @@
 <script setup>
 import { computed } from 'vue'
 import { Link, usePage } from '@inertiajs/vue3'
+import { Head } from '@inertiajs/vue3'
 import { ShoppingCartIcon } from '@heroicons/vue/24/outline'
 
 defineProps({
@@ -40,6 +43,14 @@ defineProps({
     subtitle: {
         type: String,
         default: '',
+    },
+    logo: {
+        type: String,
+        default: '/images/logo.jpeg',
+    },
+    icon: {
+        type: String,
+        default: '/images/logo.ico',
     },
 })
 

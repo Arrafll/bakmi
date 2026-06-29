@@ -1,10 +1,9 @@
 <template>
-    <div class="page-root">
-        <div class="grain-overlay" aria-hidden="true"></div>
+    <CustomerLayout title="Selamat Datang di Bakmi Jawa Mas Agus!" subtitle="Sajian lezat pilihan kami">
+        <div class="page-root">
+            <div class="grain-overlay" aria-hidden="true"></div>
 
-        <AppHeader title="Selamat Datang di Bakmi Jawa Mas Agus!" subtitle="Sajian lezat pilihan kami" />
-
-        <main>
+            <main>
             <!-- Hero Section -->
             <section class="hero">
                 <div class="hero-inner">
@@ -62,13 +61,12 @@
 
             </section>
         </main>
-
-        <AppFooter />
     </div>
+</CustomerLayout>
 </template>
 
 <script setup>
-import AppHeader from '@/Components/AppHeader.vue'
+import CustomerLayout from '@/Layouts/CustomerLayout.vue'
 import AppFooter from '@/Components/AppFooter.vue'
 import { MapPinIcon, ClockIcon, PhoneIcon } from '@heroicons/vue/24/outline'
 

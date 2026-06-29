@@ -9,9 +9,9 @@ use Illuminate\Support\Facades\Storage;
 
 class MenuService
 {
-    public function getAllMenus()
+    public function getAllMenus(int $perPage = 10)
     {
-        return Menu::orderBy('category')->orderBy('name')->get();
+        return Menu::orderBy('category')->orderBy('name')->paginate($perPage);
     }
 
     public function createMenu(array $validatedData): Menu

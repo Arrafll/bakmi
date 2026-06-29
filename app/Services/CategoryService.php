@@ -6,9 +6,9 @@ use App\Models\Category;
 
 class CategoryService
 {
-    public function getAllCategories()
+    public function getAllCategories(int $perPage = 10)
     {
-        return Category::withCount('menus')->orderBy('name')->get();
+        return Category::withCount('menus')->orderBy('name')->paginate($perPage);
     }
 
     public function createCategory(array $validatedData): Category

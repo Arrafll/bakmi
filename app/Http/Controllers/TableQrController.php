@@ -39,7 +39,6 @@ class TableQrController extends Controller
             return Inertia::render('Order/Index', [
                 'table' => [
                     'name'      => $table->name,
-                    'branch'    => $table->branch,
                     'sessionId' => $request->session()->get('table.session_id'),
                 ],
                 'menus'      => Menu::orderBy('category')
@@ -61,7 +60,6 @@ class TableQrController extends Controller
         $request->session()->put('table', [
             'id'         => $table->id,
             'name'       => $table->name,
-            'branch'     => $table->branch,
             'session_id' => $tableSessionId,
         ]);
 
@@ -73,7 +71,6 @@ class TableQrController extends Controller
         return Inertia::render('Order/Index', [
             'table' => [
                 'name'      => $table->name,
-                'branch'    => $table->branch,
                 'sessionId' => $tableSessionId,
             ],
             'menus'      => Menu::orderBy('category')

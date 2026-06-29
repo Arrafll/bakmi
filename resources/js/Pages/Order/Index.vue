@@ -1,9 +1,5 @@
 <template>
-  <div class="min-h-screen bg-amber-50 pb-32">
-
-    <!-- ── Table Identity Banner ─────────────────────────────────────────── -->
-    <AppHeader title="Keranjang" subtitle="Periksa pesanan Anda" />
-
+  <CustomerLayout title="Keranjang" subtitle="Periksa pesanan Anda">
     <div class="max-w-6xl mx-auto px-4 mt-8">
       <CategoryFilter :categories="categories" v-model="activeCategory" />
     </div>
@@ -208,12 +204,12 @@
     </Transition>
 
     <AppFooter />
-  </div>
+</CustomerLayout>
 </template>
 
 <script setup>
 import { ref, computed } from 'vue'
-import AppHeader from '@/Components/AppHeader.vue'
+import CustomerLayout from '@/Layouts/CustomerLayout.vue'
 import AppFooter from '@/Components/AppFooter.vue'
 import CategoryFilter from '@/Components/CategoryFilter.vue'
 import { router, usePage } from '@inertiajs/vue3'

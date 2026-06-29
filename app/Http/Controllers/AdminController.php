@@ -54,10 +54,14 @@ class AdminController extends Controller
     {
         $stats = $this->dashboardService->getStats();
         $recentOrders = $this->dashboardService->getRecentOrders();
+        $weeklyOrders = $this->dashboardService->getWeeklyOrders();
+        $favoriteMenus = $this->dashboardService->getFavoriteMenus();
 
         return Inertia::render('Admin/Dashboard', [
             'stats' => $stats,
             'recentOrders' => $recentOrders,
+            'weeklyOrders' => $weeklyOrders,
+            'favoriteMenus' => $favoriteMenus,
         ]);
     }
 
@@ -76,7 +80,7 @@ class AdminController extends Controller
     {
         $orders = Order::with(['table:id,name', 'items.menu:id,name,price'])
             ->orderByDesc('created_at')
-            ->get();
+            ->paginate(10);
 
         return Inertia::render('Admin/Orders', [
             'orders' => $orders,
@@ -99,7 +103,7 @@ class AdminController extends Controller
     public function menusIndex()
     {
         return Inertia::render('Admin/Menus', [
-            'menus' => $this->menuService->getAllMenus(),
+            'menus' => $this->menuService->getAllMenus(5),
             'categories' => $this->menuService->getAllCategories(),
         ]);
     }

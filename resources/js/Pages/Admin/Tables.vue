@@ -1,5 +1,12 @@
 <template>
   <AdminLayout title="Kelola Meja">
+    <!-- Header bar -->
+    <div class="flex items-center justify-between mb-6">
+      <p class="text-sm text-gray-500">{{ tables.total }} item meja</p>
+      <button @click="openCreate" class="bg-amber-700 hover:bg-amber-600 text-white text-sm font-semibold px-4 py-2 rounded-xl transition-colors">
+        + Tambah Meja
+      </button>
+    </div>
 
     <!-- ── Flash messages ──────────────────────────────────────────────────── -->
     <div v-if="flash.success" class="mb-4 bg-green-50 border border-green-200 text-green-700 px-4 py-3 rounded-xl text-sm">
@@ -9,61 +16,22 @@
       ❌ {{ flash.error }}
     </div>
 
-    <!-- ── Add Table Form ──────────────────────────────────────────────────── -->
-    <div class="bg-white rounded-2xl shadow-sm p-6 mb-6">
-      <h2 class="text-base font-semibold text-gray-700 mb-4">Tambah Meja Baru</h2>
-      <form @submit.prevent="addTable" class="flex flex-wrap gap-3 items-end">
-        <div class="flex-1 min-w-40">
-          <label class="block text-xs text-gray-500 mb-1">Nama Meja *</label>
-          <input
-            v-model="newTable.name"
-            type="text"
-            placeholder="Table 1"
-            required
-            maxlength="100"
-            class="w-full border border-gray-200 rounded-xl px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-amber-400"
-          />
-          <p v-if="addErrors.name" class="text-xs text-red-500 mt-1">{{ addErrors.name }}</p>
-        </div>
-        <div class="flex-1 min-w-40">
-          <label class="block text-xs text-gray-500 mb-1">Cabang</label>
-          <input
-            v-model="newTable.branch"
-            type="text"
-            placeholder="main"
-            maxlength="100"
-            class="w-full border border-gray-200 rounded-xl px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-amber-400"
-          />
-        </div>
-        <button
-          type="submit"
-          :disabled="adding"
-          class="px-6 py-2 bg-amber-700 hover:bg-amber-600 text-white font-semibold rounded-xl
-                 disabled:opacity-50 transition-colors"
-        >
-          {{ adding ? 'Menyimpan…' : 'Tambah' }}
-        </button>
-      </form>
-    </div>
-
     <!-- ── Tables List ─────────────────────────────────────────────────────── -->
     <div class="bg-white rounded-2xl shadow-sm overflow-hidden">
       <div class="px-6 py-4 border-b border-gray-100 flex items-center justify-between">
-        <h2 class="text-base font-semibold text-gray-700">Daftar Meja ({{ tables.length }})</h2>
-        <span class="text-xs text-gray-400">QR token panjang 40 karakter – tidak dapat ditebak</span>
+        <h2 class="text-base font-semibold text-gray-700">Daftar Meja ({{ tables.total }})</h2>
       </div>
 
-      <div v-if="!tables.length" class="text-center text-gray-400 py-16">
-        <p class="text-4xl mb-2">🪑</p>
-        <p>Belum ada meja. Tambahkan meja di atas.</p>
+      <div v-if="!tables.data.length" class="text-center text-gray-400 py-16">
+        <BuildingStorefrontIcon class="w-12 h-12 mx-auto mb-4" />
+        <p>Belum ada data meja yang didaftarkan</p>
       </div>
 
       <div class="overflow-x-auto">
-        <table v-if="tables.length" class="w-full text-sm">
+        <table v-if="tables.data.length" class="w-full text-sm">
           <thead>
             <tr class="bg-gray-50 text-left text-gray-500 text-xs uppercase tracking-wider">
               <th class="px-5 py-3">Nama</th>
-              <th class="px-5 py-3">Cabang</th>
               <th class="px-5 py-3">Status</th>
               <th class="px-5 py-3">QR Code</th>
               <th class="px-5 py-3">Total Pesanan</th>
@@ -71,7 +39,7 @@
             </tr>
           </thead>
           <tbody class="divide-y divide-gray-100">
-            <tr v-for="table in tables" :key="table.id" class="hover:bg-gray-50 transition-colors">
+            <tr v-for="table in tables.data" :key="table.id" class="hover:bg-gray-50 transition-colors">
 
               <!-- Name (editable inline) -->
               <td class="px-5 py-3">
@@ -92,8 +60,6 @@
                   @keyup.escape="editingId = null"
                 />
               </td>
-
-              <td class="px-5 py-3 text-gray-500">{{ table.branch }}</td>
 
               <!-- Active toggle -->
               <td class="px-5 py-3">
@@ -175,7 +141,73 @@
           </tbody>
         </table>
       </div>
+
+      <!-- Pagination -->
+      <div v-if="tables.last_page > 1" class="px-5 py-4 border-t border-gray-100 flex items-center justify-between">
+        <p class="text-sm text-gray-500">
+          Menampilkan {{ tables.from }} - {{ tables.to }} dari {{ tables.total }} meja
+        </p>
+        <div class="flex gap-2">
+          <button
+            @click="goToPage(tables.current_page - 1)"
+            :disabled="tables.current_page === 1"
+            class="px-3 py-1.5 border border-gray-300 rounded-lg text-sm disabled:opacity-50 disabled:cursor-not-allowed hover:bg-gray-50 transition-colors"
+          >
+            Sebelumnya
+          </button>
+          <button
+            v-for="page in visiblePages" :key="page"
+            @click="goToPage(page)"
+            :class="[
+              'px-3 py-1.5 rounded-lg text-sm font-medium transition-colors',
+              page === tables.current_page
+                ? 'bg-amber-700 text-white'
+                : 'border border-gray-300 hover:bg-gray-50',
+              page === '...' ? 'cursor-default border-none hover:bg-transparent' : ''
+            ]"
+            :disabled="page === '...'"
+          >
+            {{ page }}
+          </button>
+          <button
+            @click="goToPage(tables.current_page + 1)"
+            :disabled="tables.current_page === tables.last_page"
+            class="px-3 py-1.5 border border-gray-300 rounded-lg text-sm disabled:opacity-50 disabled:cursor-not-allowed hover:bg-gray-50 transition-colors"
+          >
+            Selanjutnya
+          </button>
+        </div>
+      </div>
     </div>
+
+    <!-- Modal Create -->
+    <Teleport to="body">
+      <div v-if="modal.open" class="fixed inset-0 z-50 flex items-center justify-center p-4">
+        <div class="absolute inset-0 bg-black/40" @click="modal.open = false" />
+        <div class="relative bg-white rounded-2xl shadow-2xl w-full max-w-md">
+          <div class="px-6 py-5 border-b border-gray-100">
+            <h3 class="text-lg font-semibold text-gray-800">Tambah Meja Baru</h3>
+          </div>
+
+          <form @submit.prevent="submitForm" class="p-6 space-y-4">
+            <div>
+              <label class="block text-sm font-medium text-gray-700 mb-1">Nama Meja <span class="text-red-500">*</span></label>
+              <input v-model="form.name" type="text" class="w-full border border-gray-300 rounded-xl px-4 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-amber-500 transition" placeholder="Contoh: Meja 1" required maxlength="100" />
+              <p v-if="errors.name" class="text-red-500 text-xs mt-1">{{ errors.name }}</p>
+            </div>
+
+            <div class="flex gap-3 pt-2">
+              <button type="button" @click="modal.open = false" class="flex-1 py-2 border border-gray-300 text-gray-600 rounded-xl text-sm hover:bg-gray-50 transition-colors">
+                Batal
+              </button>
+              <button type="submit" :disabled="submitting" class="flex-1 py-2 bg-amber-700 hover:bg-amber-600 disabled:opacity-60 text-white rounded-xl text-sm font-semibold transition-colors">
+                {{ submitting ? 'Menyimpan...' : 'Tambah' }}
+              </button>
+            </div>
+          </form>
+        </div>
+      </div>
+    </Teleport>
 
     <!-- ── Confirm Dialog ──────────────────────────────────────────────────── -->
     <Teleport to="body">
@@ -208,39 +240,82 @@
 <script setup>
 import { ref, computed } from 'vue'
 import { router, usePage } from '@inertiajs/vue3'
+import { BuildingStorefrontIcon } from '@heroicons/vue/24/outline'
 import { route } from 'ziggy-js'
 import AdminLayout from '@/Layouts/AdminLayout.vue'
 
 const props = defineProps({
-  tables: { type: Array, default: () => [] },
+  tables: { type: Object, default: () => ({ data: [], total: 0, current_page: 1, last_page: 1, per_page: 10, from: 0, to: 0 }) },
 })
 
 const page  = usePage()
 const flash = computed(() => page.props.flash ?? {})
 
-// ── Add form ──────────────────────────────────────────────────────────────────
-const newTable  = ref({ name: '', branch: 'main' })
-const addErrors = ref({})
-const adding    = ref(false)
+const visiblePages = computed(() => {
+  const total = props.tables.last_page
+  const current = props.tables.current_page
+  const pages = []
 
-function addTable() {
-  addErrors.value = {}
-  adding.value = true
-  router.post(route('admin.tables.store'), newTable.value, {
+  if (total <= 7) {
+    for (let i = 1; i <= total; i++) pages.push(i)
+  } else {
+    pages.push(1)
+    if (current > 3) pages.push('...')
+
+    const start = Math.max(2, current - 1)
+    const end = Math.min(total - 1, current + 1)
+
+    for (let i = start; i <= end; i++) pages.push(i)
+
+    if (current < total - 2) pages.push('...')
+    pages.push(total)
+  }
+
+  return pages
+})
+
+function goToPage(page) {
+  if (page >= 1 && page <= props.tables.last_page) {
+    router.get(route('admin.tables.index'), { page: page }, { preserveState: true })
+  }
+}
+
+// ── Modal form ────────────────────────────────────────────────────────────────
+const form = ref({ name: '' })
+const errors = computed(() => page.props.errors ?? {})
+const submitting = ref(false)
+const modal = ref({ open: false, isEdit: false })
+
+function openCreate() {
+  form.value = { name: '' }
+  modal.value = { open: true, isEdit: false }
+}
+
+function submitForm() {
+  submitting.value = true
+  router.post(route('admin.tables.store'), form.value, {
     preserveScroll: true,
-    onSuccess: () => { newTable.value = { name: '', branch: 'main' } },
-    onError: (e) => { addErrors.value = e },
-    onFinish: () => { adding.value = false },
+    onSuccess: () => {
+      submitting.value = false
+      modal.value.open = false
+      form.value = { name: '' }
+    },
+    onError: (e) => {
+      submitting.value = false
+    },
+    onFinish: () => {
+      submitting.value = false
+    },
   })
 }
 
 // ── Inline edit ───────────────────────────────────────────────────────────────
 const editingId = ref(null)
-const editForm  = ref({ name: '', branch: '', is_active: true })
+const editForm  = ref({ name: '', is_active: true })
 
 function startEdit(table) {
   editingId.value = table.id
-  editForm.value  = { name: table.name, branch: table.branch, is_active: table.is_active }
+  editForm.value  = { name: table.name, is_active: table.is_active }
 }
 
 function saveEdit(table) {

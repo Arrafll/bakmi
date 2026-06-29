@@ -1,6 +1,9 @@
 <template>
-    <div class="min-h-screen bg-amber-50 flex items-center justify-center px-4">
+    <head>
         <title>Admin Login - Bakmi</title>
+        <link rel="icon" type="image/x-icon" href="/images/logo.ico" />
+    </head>
+    <div class="min-h-screen bg-amber-50 flex items-center justify-center px-4">
         <div class="w-full max-w-md">
 
             <div class="text-center mb-8">

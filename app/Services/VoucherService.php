@@ -6,9 +6,9 @@ use App\Models\Voucher;
 
 class VoucherService
 {
-    public function getAllVouchers()
+    public function getAllVouchers(int $perPage = 10)
     {
-        return Voucher::orderByDesc('created_at')->get();
+        return Voucher::orderByDesc('created_at')->paginate($perPage);
     }
 
     public function createVoucher(array $validatedData): Voucher

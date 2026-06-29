@@ -13,7 +13,6 @@ class RestaurantTable extends Model
     protected $fillable = [
         'name',
         'qr_token',
-        'branch',
         'is_active',
     ];
 

@@ -2,7 +2,7 @@
   <AdminLayout title="Master Menu">
     <!-- Header bar -->
     <div class="flex items-center justify-between mb-6">
-      <p class="text-sm text-gray-500">{{ menus.length }} item menu</p>
+      <p class="text-sm text-gray-500">{{ menus.total }} item menu</p>
       <button @click="openCreate" class="bg-amber-700 hover:bg-amber-600 text-white text-sm font-semibold px-4 py-2 rounded-xl transition-colors flex items-center gap-2">
         <span class="text-base leading-none">+</span> Tambah Menu
       </button>
@@ -28,7 +28,7 @@
             </tr>
           </thead>
           <tbody class="divide-y divide-gray-100">
-            <tr v-for="menu in menus" :key="menu.id" class="hover:bg-gray-50 transition-colors">
+            <tr v-for="menu in menus.data" :key="menu.id" class="hover:bg-gray-50 transition-colors">
               <td class="px-5 py-3">
                 <div class="w-12 h-12 rounded-xl overflow-hidden bg-amber-100 flex items-center justify-center text-xl flex-shrink-0">
                   <img v-if="menu.image_path" :src="'/storage/' + menu.image_path" :alt="menu.name" class="w-full h-full object-cover" />
@@ -58,11 +58,48 @@
                 </td>
 
             </tr>
-            <tr v-if="menus.length === 0">
+            <tr v-if="menus.data.length === 0">
               <td colspan="6" class="px-5 py-10 text-center text-gray-400">Belum ada menu. Klik "Tambah Menu" untuk mulai.</td>
             </tr>
           </tbody>
         </table>
+      </div>
+
+      <!-- Pagination -->
+      <div v-if="menus.last_page > 1" class="px-5 py-4 border-t border-gray-100 flex items-center justify-between">
+        <p class="text-sm text-gray-500">
+          Menampilkan {{ menus.from }} - {{ menus.to }} dari {{ menus.total }} menu
+        </p>
+        <div class="flex gap-2">
+          <button
+            @click="goToPage(menus.current_page - 1)"
+            :disabled="menus.current_page === 1"
+            class="px-3 py-1.5 border border-gray-300 rounded-lg text-sm disabled:opacity-50 disabled:cursor-not-allowed hover:bg-gray-50 transition-colors"
+          >
+            Sebelumnya
+          </button>
+          <button
+            v-for="page in visiblePages" :key="page"
+            @click="goToPage(page)"
+            :class="[
+              'px-3 py-1.5 rounded-lg text-sm font-medium transition-colors',
+              page === menus.current_page
+                ? 'bg-amber-700 text-white'
+                : 'border border-gray-300 hover:bg-gray-50',
+              page === '...' ? 'cursor-default border-none hover:bg-transparent' : ''
+            ]"
+            :disabled="page === '...'"
+          >
+            {{ page }}
+          </button>
+          <button
+            @click="goToPage(menus.current_page + 1)"
+            :disabled="menus.current_page === menus.last_page"
+            class="px-3 py-1.5 border border-gray-300 rounded-lg text-sm disabled:opacity-50 disabled:cursor-not-allowed hover:bg-gray-50 transition-colors"
+          >
+            Selanjutnya
+          </button>
+        </div>
       </div>
     </div>
 
@@ -156,7 +193,7 @@ import AdminLayout from '@/Layouts/AdminLayout.vue'
 import { useFormat } from '@/composables/useFormat'
 
 const props = defineProps({
-  menus: { type: Array, default: () => [] },
+  menus: { type: Object, default: () => ({ data: [], total: 0, current_page: 1, last_page: 1, per_page: 10, from: 0, to: 0 }) },
   categories: { type: Array, default: () => [] },
 })
 
@@ -179,6 +216,35 @@ const emptyForm = () => ({
 const form = ref(emptyForm())
 const imagePreview = ref(null)
 const modal = ref({ open: false, isEdit: false, editId: null })
+
+const visiblePages = computed(() => {
+  const total = props.menus.last_page
+  const current = props.menus.current_page
+  const pages = []
+
+  if (total <= 7) {
+    for (let i = 1; i <= total; i++) pages.push(i)
+  } else {
+    pages.push(1)
+    if (current > 3) pages.push('...')
+
+    const start = Math.max(2, current - 1)
+    const end = Math.min(total - 1, current + 1)
+
+    for (let i = start; i <= end; i++) pages.push(i)
+
+    if (current < total - 2) pages.push('...')
+    pages.push(total)
+  }
+
+  return pages
+})
+
+function goToPage(page) {
+  if (page >= 1 && page <= props.menus.last_page) {
+    router.get(route('admin.menus.index'), { page: page }, { preserveState: true })
+  }
+}
 
 function openCreate() {
   form.value = emptyForm()

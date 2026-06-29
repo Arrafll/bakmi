@@ -24,13 +24,11 @@ class TableController extends Controller
     public function index(): \Inertia\Response
     {
         $tables = RestaurantTable::withCount('orders')
-            ->orderBy('branch')
             ->orderBy('name')
-            ->get()
-            ->map(fn(RestaurantTable $t) => [
+            ->paginate(10)
+            ->through(fn(RestaurantTable $t) => [
                 'id'          => $t->id,
                 'name'        => $t->name,
-                'branch'      => $t->branch,
                 'is_active'   => $t->is_active,
                 'qr_code_url' => $t->qrCodeExists() ? $t->qr_code_url : null,
                 'qr_url'      => $t->qr_url,
@@ -46,12 +44,10 @@ class TableController extends Controller
     {
         $data = $request->validate([
             'name'   => ['required', 'string', 'max:100'],
-            'branch' => ['nullable', 'string', 'max:100'],
         ]);
 
         $table = RestaurantTable::create([
             'name'     => $data['name'],
-            'branch'   => $data['branch'] ?? 'main',
             'qr_token' => Str::random(40),
         ]);
 
@@ -67,7 +63,6 @@ class TableController extends Controller
     {
         $data = $request->validate([
             'name'      => ['sometimes', 'required', 'string', 'max:100'],
-            'branch'    => ['nullable', 'string', 'max:100'],
             'is_active' => ['sometimes', 'boolean'],
         ]);
 

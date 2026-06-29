@@ -1,4 +1,8 @@
 <template>
+    <Head>
+        <link rel="icon" type="image/x-icon" :href="icon" />
+        <title>{{ title }} | Bakmi Admin</title>
+    </Head>
     <div class="min-h-screen bg-gray-100 flex">
         <!-- Sidebar -->
         <aside :class="[
@@ -8,10 +12,10 @@
         ]">
             <!-- Brand -->
             <div class="px-4 py-4 border-b border-amber-700 flex items-center gap-3">
-                <img :src="'/images/logo.jpeg'" alt="Bakmi Jawa Mas Agus"
+                <img :src="logo" :alt="title"
                     class="h-12 w-12 object-contain rounded-full bg-white p-0.5 flex-shrink-0" />
                 <div>
-                    <p class="font-bold text-base leading-tight">Bakmi Admin</p>
+                    <p class="font-bold text-base leading-tight">{{ title }}</p>
                     <p class="text-amber-300 text-xs">Halaman Manajemen</p>
                 </div>
             </div>
@@ -53,7 +57,7 @@
                     <form @submit.prevent="logout">
                         <button type="submit"
                             class="flex items-center gap-1.5 text-sm text-gray-600 hover:text-red-600 font-medium px-3 py-1.5 rounded-lg hover:bg-red-50 transition-colors">
-                            <ArrowLeftOnRectangleIcon class="w-4 h-4" />
+                            <ArrowLeftEndOnRectangleIcon class="w-4 h-4" />
                             <span class="hidden sm:inline">Keluar</span>
                         </button>
                     </form>
@@ -81,14 +85,24 @@ import { ref, onMounted, onUnmounted } from 'vue'
 import { Link, router, usePage } from '@inertiajs/vue3'
 import { route } from 'ziggy-js'
 import { computed } from 'vue'
-import { HomeIcon, ClipboardDocumentListIcon, TicketIcon, QrCodeIcon, TagIcon } from '@heroicons/vue/24/outline'
+import { Head } from '@inertiajs/vue3'
+import { HomeIcon, ClipboardDocumentListIcon, TicketIcon, QrCodeIcon, TagIcon, ArrowLeftEndOnRectangleIcon } from '@heroicons/vue/24/outline'
 import OrderNotification from '@/Components/OrderNotification.vue'
 import Pusher from 'pusher-js'
+import Swal from 'sweetalert2'
 
 defineProps({
     title: {
         type: String,
         default: 'Admin',
+    },
+    logo: {
+        type: String,
+        default: '/images/logo.jpeg',
+    },
+    icon: {
+        type: String,
+        default: '/images/logo.ico',
     },
 })
 
@@ -103,7 +117,21 @@ let channel = null
 const pusherConnected = ref(false)
 
 function logout() {
-    router.post(route('admin.logout'))
+    Swal.fire({
+        title: 'Keluar dari Akun?',
+        text: 'Anda akan keluar dari panel admin',
+        icon: 'question',
+        showCancelButton: true,
+        confirmButtonColor: '#d97706',
+        cancelButtonColor: '#6b7280',
+        confirmButtonText: 'Ya, Keluar',
+        cancelButtonText: 'Batal',
+        reverseButtons: true,
+    }).then((result) => {
+        if (result.isConfirmed) {
+            router.post(route('admin.logout'))
+        }
+    })
 }
 
 function initPusher() {
