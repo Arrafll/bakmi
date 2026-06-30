@@ -34,6 +34,7 @@ import { computed } from 'vue'
 import { Link, usePage } from '@inertiajs/vue3'
 import { Head } from '@inertiajs/vue3'
 import { ShoppingCartIcon } from '@heroicons/vue/24/outline'
+import { asset } from '@/utils/asset'
 
 defineProps({
     title: {
@@ -46,11 +47,11 @@ defineProps({
     },
     logo: {
         type: String,
-        default: '/images/logo.jpeg',
+        default: asset('/images/logo.jpeg'),
     },
     icon: {
         type: String,
-        default: '/images/logo.ico',
+        default: asset('/images/logo.ico'),
     },
 })
 

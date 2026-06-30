@@ -1,13 +1,13 @@
 <template>
     <head>
         <title>Admin Login - Bakmi</title>
-        <link rel="icon" type="image/x-icon" href="/images/logo.ico" />
+        <link rel="icon" type="image/x-icon" :href="asset('/images/logo.ico')" />
     </head>
     <div class="min-h-screen bg-amber-50 flex items-center justify-center px-4">
         <div class="w-full max-w-md">
 
             <div class="text-center mb-8">
-                <img :src="'/images/logo.jpeg'" alt="Bakmi Jawa Mas Agus"
+                <img :src="asset('/images/logo.jpeg')" alt="Bakmi Jawa Mas Agus"
                     class="mx-auto h-32 w-32 object-contain rounded-full bg-white p-1 shadow-md" />
 
                 <h1 class="text-3xl font-bold text-amber-800 mt-4">
@@ -87,6 +87,8 @@
 <script setup>
 import { ref } from 'vue'
 import { useForm } from '@inertiajs/vue3'
+import { route } from 'ziggy-js'
+import { asset } from '@/utils/asset'
 
 defineProps({
     errors: {
@@ -105,7 +107,7 @@ const form = useForm({
 })
 
 function submit() {
-    form.post('/admin/login', {
+    form.post(route('admin.login.post'), {
         onFinish: () => form.reset('password'),
     })
 }

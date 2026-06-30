@@ -5,6 +5,7 @@
 
 <script setup>
 import AppHeader from '@/Components/AppHeader.vue'
+import { asset } from '@/utils/asset'
 
 defineProps({
     title: {
@@ -17,11 +18,11 @@ defineProps({
     },
     logo: {
         type: String,
-        default: '/images/logo.jpeg',
+        default: asset('/images/logo.jpeg'),
     },
     icon: {
         type: String,
-        default: '/images/logo.ico',
+        default: asset('/images/logo.ico'),
     },
 })
 </script>
