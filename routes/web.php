@@ -1,9 +1,11 @@
 <?php
 
+use App\Http\Controllers\Admin\SpkController;
 use App\Http\Controllers\Admin\TableController;
 use App\Http\Controllers\AdminController;
 use App\Http\Controllers\CartController;
 use App\Http\Controllers\OrderController;
+use App\Http\Controllers\RecommendationController;
 use App\Http\Controllers\TableQrController;
 use App\Http\Controllers\VoucherController;
 use Illuminate\Support\Facades\Route;
@@ -60,6 +62,11 @@ Route::post('/voucher/apply', [VoucherController::class, 'apply'])
     ->name('voucher.apply')
     ->middleware('table.session');
 
+// ── SPK Recommendation (customer-facing, public) ──────────────────────────
+Route::get('/rekomendasi', [RecommendationController::class, 'index'])
+    ->name('recommendation.index')
+    ->middleware('table.session');
+
 // ── Admin auth routes (guests only) ──────────────────────────────────────────
 Route::middleware('guest')->group(function () {
     Route::get('/admin', [AdminController::class, 'showLogin'])->name('admin.login');
@@ -92,6 +99,13 @@ Route::middleware('admin.auth')->prefix('admin')->name('admin.')->group(function
     Route::post('/vouchers', [AdminController::class, 'vouchersStore'])->name('vouchers.store');
     Route::put('/vouchers/{voucher}', [AdminController::class, 'vouchersUpdate'])->name('vouchers.update');
     Route::delete('/vouchers/{voucher}', [AdminController::class, 'vouchersDestroy'])->name('vouchers.destroy');
+
+    // ── SPK / DSS ──────────────────────────────────────────────────────────────
+    Route::prefix('spk')->name('spk.')->group(function () {
+        Route::get('/', [SpkController::class, 'index'])->name('index');
+        Route::put('/weights', [SpkController::class, 'updateWeights'])->name('weights.update');
+        Route::put('/scores', [SpkController::class, 'updateScores'])->name('scores.update');
+    });
 
     // ── Table / QR management ─────────────────────────────────────────────────
     Route::prefix('tables')->name('tables.')->group(function () {

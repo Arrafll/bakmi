@@ -21,11 +21,19 @@ class MenuService
             unset($validatedData['image']);
         }
 
+        if (isset($validatedData['category'])) {
+            $validatedData['category'] = strtolower(trim($validatedData['category']));
+        }
+
         return Menu::create($validatedData);
     }
 
     public function updateMenu(Menu $menu, array $validatedData): Menu
     {
+        if (isset($validatedData['category'])) {
+            $validatedData['category'] = strtolower(trim($validatedData['category']));
+        }
+
         if (isset($validatedData['image']) && $validatedData['image'] instanceof UploadedFile) {
             if ($menu->image_path) {
                 Storage::disk('public')->delete($menu->image_path);
