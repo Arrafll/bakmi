@@ -87,6 +87,7 @@
 <script setup>
 import { ref } from 'vue'
 import { useForm } from '@inertiajs/vue3'
+import { route } from 'ziggy-js'
 
 defineProps({
     errors: {
@@ -105,7 +106,7 @@ const form = useForm({
 })
 
 function submit() {
-    form.post('/admin/login', {
+    form.post(route('admin.login.post'), {
         onFinish: () => form.reset('password'),
     })
 }
