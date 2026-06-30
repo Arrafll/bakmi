@@ -7,6 +7,10 @@ COPY package*.json ./
 RUN npm ci
 
 COPY . .
+
+ARG VITE_APP_BASE=/build/
+ENV VITE_APP_BASE=${VITE_APP_BASE}
+
 RUN npm run build
 
 
