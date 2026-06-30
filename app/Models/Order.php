@@ -27,4 +27,9 @@ class Order extends Model
     {
         return $this->belongsTo(RestaurantTable::class, 'table_id');
     }
+
+    public function voucher()
+    {
+        return $this->belongsTo(Voucher::class, 'voucher_code', 'code');
+    }
 }
