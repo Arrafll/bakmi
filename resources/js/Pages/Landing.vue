@@ -19,7 +19,7 @@
                 </div>
                 <div class="hero-image-wrap">
                     <div class="hero-image-frame">
-                        <img :src="'/images/logo.jpeg'" alt="hero" class="hero-image" />
+                        <img :src="asset('/images/logo.jpeg')" alt="hero" class="hero-image" />
                     </div>
                     <div class="hero-image-accent" aria-hidden="true"></div>
                 </div>
@@ -69,6 +69,7 @@
 import CustomerLayout from '@/Layouts/CustomerLayout.vue'
 import AppFooter from '@/Components/AppFooter.vue'
 import { MapPinIcon, ClockIcon, PhoneIcon } from '@heroicons/vue/24/outline'
+import { asset } from '@/utils/asset'
 
 const props = defineProps({
     company: {

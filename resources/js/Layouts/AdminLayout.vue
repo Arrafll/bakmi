@@ -90,6 +90,7 @@ import { HomeIcon, ClipboardDocumentListIcon, TicketIcon, QrCodeIcon, TagIcon, A
 import OrderNotification from '@/Components/OrderNotification.vue'
 import Pusher from 'pusher-js'
 import Swal from 'sweetalert2'
+import { asset } from '@/utils/asset'
 
 defineProps({
     title: {
@@ -98,11 +99,11 @@ defineProps({
     },
     logo: {
         type: String,
-        default: '/images/logo.jpeg',
+        default: asset('/images/logo.jpeg'),
     },
     icon: {
         type: String,
-        default: '/images/logo.ico',
+        default: asset('/images/logo.ico'),
     },
 })
 

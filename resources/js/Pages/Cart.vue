@@ -36,7 +36,7 @@
               <div class="w-16 h-16 rounded-xl overflow-hidden bg-amber-100 flex-shrink-0">
                 <img
                   v-if="item.image_path"
-                  :src="'/storage/' + item.image_path"
+                  :src="asset('/storage/' + item.image_path)"
                   :alt="item.name"
                   class="w-full h-full object-cover"
                 />
@@ -189,6 +189,7 @@ import { Link, router, usePage } from '@inertiajs/vue3'
 import { route } from 'ziggy-js'
 import CustomerLayout from '@/Layouts/CustomerLayout.vue'
 import AppFooter from '@/Components/AppFooter.vue'
+import { asset } from '@/utils/asset'
 
 const props = defineProps({
   cart: {
