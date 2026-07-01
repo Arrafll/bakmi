@@ -57,10 +57,10 @@
               </td>
               <td class="px-5 py-3 text-gray-500 text-xs">{{ formatDate(order.created_at) }}</td>
               <td class="px-5 py-3 text-center space-x-2">
-                <button @click="openDetail(order)" class="py-1.5 px-3 border border-gray-300 text-gray-700 bg-white rounded-md text-xs font-medium hover:bg-gray-100 transition">
+                <button @click="openDetail(order)" class="py-2 px-3 border border-blue-300 text-blue-700 bg-blue-50 rounded-md text-sm font-medium hover:bg-blue-100 hover:border-blue-400 active:bg-blue-200 transition focus:outline-none focus:ring-2 focus:ring-blue-300">
                   Detail
                 </button>
-                <button @click="openStatus(order)" class="py-1.5 px-3 border border-amber-400 text-amber-700 bg-white rounded-md text-xs font-medium hover:bg-amber-50 transition">
+                <button @click="openStatus(order)" class="py-2 px-3 border border-amber-400 text-amber-700 bg-amber-50 rounded-md text-sm font-medium hover:bg-amber-100 hover:border-amber-500 active:bg-amber-200 transition focus:outline-none focus:ring-2 focus:ring-amber-300">
                   Proses
                 </button>
               </td>
@@ -181,27 +181,64 @@
     <Teleport to="body">
       <div v-if="statusTarget" class="fixed inset-0 z-50 flex items-center justify-center p-4">
         <div class="absolute inset-0 bg-black/40" @click="statusTarget = null" />
-        <div class="relative bg-white rounded-2xl shadow-2xl w-full max-w-sm p-6">
+        <div class="relative bg-white rounded-2xl shadow-2xl w-full max-w-md p-6">
           <h3 class="text-lg font-semibold text-gray-800 mb-1">Ubah Status Pesanan</h3>
           <p class="text-sm text-gray-400 mb-4">#{{ statusTarget.id }} · {{ statusTarget.customer_name }}</p>
 
-          <div class="grid grid-cols-2 gap-2 mb-5">
-            <button
-              v-for="s in statuses" :key="s"
-              @click="selectedStatus = s"
-              :class="[
-                'py-2 px-3 rounded-xl text-sm font-semibold border-2 transition-colors',
-                selectedStatus === s
-                  ? statusBorderClass(s) + ' ' + statusClass(s)
-                  : 'border-gray-200 text-gray-500 hover:border-gray-300',
-              ]"
+          <!-- Status Dropdown -->
+          <div class="mb-5">
+            <label class="block text-sm font-medium text-gray-700 mb-2">Status Pesanan</label>
+            <select
+              v-model="selectedStatus"
+              class="w-full px-4 py-2.5 border border-gray-300 rounded-xl text-sm focus:ring-2 focus:ring-amber-500 focus:border-amber-500 transition-colors"
             >
-              {{ statusLabel(s) }}
-            </button>
+              <option v-for="s in statuses" :key="s" :value="s">
+                {{ statusLabel(s) }}
+              </option>
+            </select>
+          </div>
+
+          <!-- Order Summary (shown when status is selesai) -->
+          <div v-if="selectedStatus === 'selesai'" class="mb-5 p-4 bg-green-50 border border-green-200 rounded-xl">
+            <p class="text-sm font-semibold text-green-800 mb-3">Ringkasan Pesanan</p>
+
+            <!-- Items -->
+            <div class="space-y-2 mb-3">
+              <div
+                v-for="item in statusTarget.items" :key="item.id"
+                class="flex justify-between text-xs text-gray-700"
+              >
+                <span>{{ item.menu?.name ?? 'Menu dihapus' }} × {{ item.quantity }}</span>
+                <span class="font-medium">{{ formatPrice(item.price * item.quantity) }}</span>
+              </div>
+            </div>
+
+            <!-- Pricing -->
+            <div class="border-t border-green-300 pt-2 space-y-1.5 text-xs">
+              <div class="flex justify-between text-gray-600">
+                <span>Subtotal</span>
+                <span>{{ formatPrice(calculateSubtotal(statusTarget)) }}</span>
+              </div>
+              <div v-if="statusTarget.voucher_code" class="flex justify-between text-green-700 font-medium">
+                <span>Diskon ({{ statusTarget.voucher_code }})</span>
+                <span>– {{ formatPrice(statusTarget.discount_amount) }}</span>
+              </div>
+              <div class="flex justify-between font-bold text-green-800 text-sm pt-1">
+                <span>Total Bayar</span>
+                <span>{{ formatPrice(statusTarget.total_price) }}</span>
+              </div>
+            </div>
           </div>
 
           <div class="flex gap-3">
             <button @click="statusTarget = null" class="flex-1 py-2 border border-gray-300 text-gray-600 rounded-xl text-sm hover:bg-gray-50 transition-colors">Batal</button>
+            <button
+              v-if="selectedStatus === 'selesai'"
+              @click="printOrder"
+              class="flex-1 py-2 border-2 border-green-600 text-green-700 bg-white rounded-xl text-sm font-semibold hover:bg-green-50 transition-colors"
+            >
+              Cetak
+            </button>
             <button @click="doUpdateStatus" :disabled="submitting || selectedStatus === statusTarget.status" class="flex-1 py-2 bg-amber-700 hover:bg-amber-600 disabled:opacity-50 text-white rounded-xl text-sm font-semibold transition-colors">
               {{ submitting ? 'Menyimpan...' : 'Simpan' }}
             </button>
@@ -306,6 +343,15 @@ function openDetail(order) {
 function openStatus(order) {
   statusTarget.value = order
   selectedStatus.value = order.status
+}
+
+function calculateSubtotal(order) {
+  return order.items.reduce((sum, item) => sum + (item.price * item.quantity), 0)
+}
+
+function printOrder() {
+  const printUrl = route('admin.orders.print', statusTarget.value.id)
+  window.open(printUrl, '_blank')
 }
 
 function doUpdateStatus() {

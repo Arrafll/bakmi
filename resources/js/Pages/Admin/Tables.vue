@@ -122,7 +122,7 @@
                   <button
                     v-if="editingId !== table.id"
                     @click="confirmRegenerate(table)"
-                    class="text-xs px-3 py-1 bg-blue-50 text-blue-700 rounded-lg hover:bg-blue-100 transition-colors"
+                    class="py-2 px-3 border border-blue-300 text-blue-700 bg-blue-50 rounded-md text-sm font-medium hover:bg-blue-100 hover:border-blue-400 active:bg-blue-200 transition focus:outline-none focus:ring-2 focus:ring-blue-300"
                   >
                     Regenerasi QR
                   </button>
@@ -131,7 +131,7 @@
                   <button
                     v-if="editingId !== table.id"
                     @click="confirmDelete(table)"
-                    class="text-xs px-3 py-1 bg-red-50 text-red-600 rounded-lg hover:bg-red-100 transition-colors"
+                    class="py-2 px-3 border border-red-300 text-red-600 bg-white rounded-md text-sm font-medium hover:bg-red-50 hover:border-red-400 active:bg-red-100 transition focus:outline-none focus:ring-2 focus:ring-red-300"
                   >
                     Hapus
                   </button>

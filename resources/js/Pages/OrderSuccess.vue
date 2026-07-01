@@ -60,7 +60,7 @@
 
         <!-- CTA -->
         <Link
-          :href="table?.qr_token ? `/order/${table.qr_token}` : '/'"
+          :href="table?.qr_token ? route('order.enter', { qr_token: table.qr_token }) : '/'"
           class="w-full block text-center bg-amber-700 hover:bg-amber-600 text-white font-bold py-3 rounded-xl transition-colors text-lg"
         >
           Pesan Lagi

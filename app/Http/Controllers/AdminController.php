@@ -98,6 +98,15 @@ class AdminController extends Controller
         return back()->with('success', 'Status pesanan berhasil diperbarui.');
     }
 
+    public function ordersPrint(Order $order)
+    {
+        $order->load(['table:id,name', 'items.menu:id,name,price']);
+
+        return Inertia::render('Admin/OrderPrint', [
+            'order' => $order,
+        ]);
+    }
+
     // ── Menu CRUD ────────────────────────────────────────────────────────────
 
     public function menusIndex()

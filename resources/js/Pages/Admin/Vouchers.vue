@@ -24,7 +24,7 @@
               <th class="px-5 py-3">Penggunaan</th>
               <th class="px-5 py-3">Masa Berlaku</th>
               <th class="px-5 py-3">Status</th>
-              <th class="px-5 py-3 text-right">Aksi</th>
+              <th class="px-5 py-3 text-center">Aksi</th>
             </tr>
           </thead>
           <tbody class="divide-y divide-gray-100">
@@ -43,7 +43,7 @@
               </td>
               <td class="px-5 py-3 text-gray-500 text-xs">
                 <template v-if="v.valid_from || v.valid_until">
-                  {{ v.valid_from ?? '...' }} s/d {{ v.valid_until ?? '...' }}
+                  {{ v.valid_from ? formatDate(v.valid_from) : '...' }} s/d {{ v.valid_until ? formatDate(v.valid_until) : '...' }}
                 </template>
                 <span v-else>Tidak dibatasi</span>
               </td>
@@ -52,9 +52,13 @@
                   {{ v.is_active ? 'Aktif' : 'Nonaktif' }}
                 </span>
               </td>
-              <td class="px-5 py-3 text-right space-x-2">
-                <button @click="openEdit(v)" class="text-xs text-blue-600 hover:text-blue-800 font-medium transition-colors">Edit</button>
-                <button @click="confirmDelete(v)" class="text-xs text-red-500 hover:text-red-700 font-medium transition-colors">Hapus</button>
+              <td class="px-5 py-3 text-center space-x-2">
+                <button @click="openEdit(v)" class="py-2 px-3 border border-blue-300 text-blue-700 bg-blue-50 rounded-md text-sm font-medium hover:bg-blue-100 hover:border-blue-400 active:bg-blue-200 transition focus:outline-none focus:ring-2 focus:ring-blue-300">
+                  Edit
+                </button>
+                <button @click="confirmDelete(v)" class="py-2 px-3 border border-red-300 text-red-600 bg-white rounded-md text-sm font-medium hover:bg-red-50 hover:border-red-400 active:bg-red-100 transition focus:outline-none focus:ring-2 focus:ring-red-300">
+                  Hapus
+                </button>
               </td>
             </tr>
             <tr v-if="vouchers.data.length === 0">
@@ -73,7 +77,7 @@
           <button
             @click="goToPage(vouchers.current_page - 1)"
             :disabled="vouchers.current_page === 1"
-            class="px-3 py-1.5 border border-gray-300 rounded-lg text-sm disabled:opacity-50 disabled:cursor-not-allowed hover:bg-gray-50 transition-colors"
+            class="px-3 py-1.5 border border-gray-300 rounded-xl text-sm disabled:opacity-50 disabled:cursor-not-allowed hover:bg-gray-50 transition-colors"
           >
             Sebelumnya
           </button>
@@ -81,7 +85,7 @@
             v-for="page in visiblePages" :key="page"
             @click="goToPage(page)"
             :class="[
-              'px-3 py-1.5 rounded-lg text-sm font-medium transition-colors',
+              'px-3 py-1.5 rounded-xl text-sm font-medium transition-colors',
               page === vouchers.current_page
                 ? 'bg-amber-700 text-white'
                 : 'border border-gray-300 hover:bg-gray-50',
@@ -94,7 +98,7 @@
           <button
             @click="goToPage(vouchers.current_page + 1)"
             :disabled="vouchers.current_page === vouchers.last_page"
-            class="px-3 py-1.5 border border-gray-300 rounded-lg text-sm disabled:opacity-50 disabled:cursor-not-allowed hover:bg-gray-50 transition-colors"
+            class="px-3 py-1.5 border border-gray-300 rounded-xl text-sm disabled:opacity-50 disabled:cursor-not-allowed hover:bg-gray-50 transition-colors"
           >
             Selanjutnya
           </button>
@@ -114,7 +118,7 @@
           <form @submit.prevent="submitForm" class="p-6 space-y-4">
             <div>
               <label class="block text-sm font-medium text-gray-700 mb-1">Kode Voucher <span class="text-red-500">*</span></label>
-              <input v-model="form.code" type="text" class="input uppercase" placeholder="Contoh: HEMAT20" :disabled="modal.isEdit" required />
+              <input v-model="form.code" type="text" class="input uppercase w-full border border-gray-300 rounded-xl px-4 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-amber-500 transition" placeholder="Contoh: HEMAT20" :disabled="modal.isEdit" required />
               <p v-if="errors.code" class="text-red-500 text-xs mt-1">{{ errors.code }}</p>
             </div>
 
@@ -213,7 +217,7 @@ defineProps({
 const page = usePage()
 const flash = computed(() => page.props.flash ?? {})
 const errors = computed(() => page.props.errors ?? {})
-const { formatPrice } = useFormat()
+const { formatPrice, formatDate } = useFormat()
 const submitting = ref(false)
 const deleteTarget = ref(null)
 

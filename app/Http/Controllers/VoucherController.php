@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Models\Voucher;
+use App\Models\CartItem;
 
 class VoucherController extends Controller
 {
@@ -13,36 +14,48 @@ class VoucherController extends Controller
     public function apply(Request $request)
     {
         $request->validate([
-            'code'        => 'required|string',
-            'cart_total'  => 'required|numeric|min:0',
+            'voucher_code' => 'required|string|max:50',
         ]);
 
-        $voucher = Voucher::where('code', strtoupper($request->code))->first();
+        // Get session ID from table session
+        $sessionId = $request->session()->get('table.session_id');
 
-        if (! $voucher) {
-            return response()->json(['error' => 'Kode voucher tidak ditemukan.'], 422);
+        if (!$sessionId) {
+            return back()->with('error', 'Sesi tidak valid.');
         }
 
-        if (! $voucher->isValid((float) $request->cart_total)) {
+        // Get cart items from database
+        $cartItems = CartItem::with('menu:id,price')
+            ->where('session_id', $sessionId)
+            ->get();
+
+        $cartTotal = $cartItems->sum(fn($item) => ($item->menu->price ?? 0) * $item->quantity);
+
+        $voucher = Voucher::where('code', strtoupper($request->voucher_code))->first();
+
+        if (! $voucher) {
+            return back()->with('error', 'Kode voucher tidak ditemukan.');
+        }
+
+        if (! $voucher->isValid($cartTotal)) {
             $reason = 'Voucher tidak valid atau sudah kadaluarsa.';
 
-            if ($request->cart_total < $voucher->min_order) {
-                $reason = 'Minimum pembelian ' . number_format($voucher->min_order, 0, ',', '.') . ' untuk menggunakan voucher ini.';
+            if (! $voucher->is_active) {
+                $reason = 'Voucher tidak aktif.';
+            } elseif ($cartTotal < $voucher->min_order) {
+                $reason = 'Minimum pembelian Rp ' . number_format($voucher->min_order, 0, ',', '.') . ' untuk menggunakan voucher ini.';
             } elseif ($voucher->max_uses !== null && $voucher->used_count >= $voucher->max_uses) {
                 $reason = 'Voucher sudah mencapai batas penggunaan.';
             }
 
-            return response()->json(['error' => $reason], 422);
+            return back()->with('error', $reason);
         }
 
-        $discount = $voucher->calculateDiscount((float) $request->cart_total);
+        $discount = $voucher->calculateDiscount($cartTotal);
 
-        return response()->json([
-            'code'           => $voucher->code,
-            'description'    => $voucher->description,
-            'discount_type'  => $voucher->discount_type,
-            'discount_value' => $voucher->discount_value,
-            'discount_amount' => $discount,
+        return back()->with([
+            'success' => 'Voucher berhasil diterapkan!',
+            'discount' => $discount,
         ]);
     }
 }

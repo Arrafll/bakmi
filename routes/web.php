@@ -72,6 +72,7 @@ Route::middleware('admin.auth')->prefix('admin')->name('admin.')->group(function
     // Orders
     Route::get('/orders', [AdminController::class, 'ordersIndex'])->name('orders.index');
     Route::put('/orders/{order}/status', [AdminController::class, 'ordersUpdateStatus'])->name('orders.update-status');
+    Route::get('/orders/{order}/print', [AdminController::class, 'ordersPrint'])->name('orders.print');
 
     // Master Category
     Route::get('/categories', [AdminController::class, 'categoriesIndex'])->name('categories.index');

@@ -297,17 +297,29 @@ function applyVoucher() {
   if (!voucherCode.value) return
   applyingVoucher.value = true
   voucherMessage.value  = ''
+  discountAmount.value = 0
+  appliedVoucher.value = ''
 
   router.post(route('voucher.apply'), { voucher_code: voucherCode.value }, {
     preserveScroll: true,
     onSuccess: (page) => {
       const flash = page.props.flash ?? {}
-      if (flash.discount !== undefined) {
+
+      // Check if there's an error message
+      if (flash.error) {
+        voucherMessage.value = flash.error
+        discountAmount.value = 0
+        appliedVoucher.value = ''
+      }
+      // Check if voucher was successfully applied
+      else if (flash.success && flash.discount !== undefined) {
         discountAmount.value = flash.discount
         appliedVoucher.value = voucherCode.value
-        voucherMessage.value = flash.success ?? 'Voucher berhasil diterapkan!'
-      } else {
-        voucherMessage.value = flash.error ?? 'Voucher tidak valid.'
+        voucherMessage.value = flash.success
+      }
+      // Fallback
+      else {
+        voucherMessage.value = 'Terjadi kesalahan.'
         discountAmount.value = 0
         appliedVoucher.value = ''
       }
@@ -315,6 +327,7 @@ function applyVoucher() {
     onError: () => {
       voucherMessage.value = 'Voucher tidak valid.'
       discountAmount.value = 0
+      appliedVoucher.value = ''
     },
     onFinish: () => { applyingVoucher.value = false },
   })
