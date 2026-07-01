@@ -14,8 +14,8 @@ Route::get('/', function () {
         'name' => 'Bakmi Jawa Mas Agus',
         'tagline' => 'Masakan Tulus, Rasane Nyess Tenan',
         'description' => 'Bakmi Jawa Mas Agus adalah rumah makan keluarga yang menyajikan bakmi tradisional dengan resep turun-temurun. Kami menggunakan bahan segar dan teknik memasak yang menjaga cita rasa otentik.',
-        'address' => 'Jl. Contoh No.123, Kota Contoh',
-        'phone' => '0812-3456-7890',
+        'address' => 'Jl. Raya Jakarta-Bogor No.4, Sukamaju Baru, Kec. Tapos, Kota Depok, Jawa Barat 16416',
+        'phone' => '0813-1772-5228',
         'opening_hours' => [
             'Senin-Jumat' => '09:00 - 21:00',
             'Sabtu-Minggu' => '09:00 - 22:00',

@@ -73,7 +73,7 @@
                             <td class="px-6 py-3">
                                 <span v-if="order.voucher_code"
                                     class="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-xs bg-purple-100 text-purple-700 font-medium">
-                                    🎟️ {{ order.voucher_code }}
+                                    {{ order.voucher_code }}
                                 </span>
                                 <span v-else class="text-gray-300">—</span>
                             </td>

@@ -10,17 +10,15 @@
 
     <!-- ── Flash messages ──────────────────────────────────────────────────── -->
     <div v-if="flash.success" class="mb-4 bg-green-50 border border-green-200 text-green-700 px-4 py-3 rounded-xl text-sm">
-      ✅ {{ flash.success }}
+     {{ flash.success }}
     </div>
     <div v-if="flash.error" class="mb-4 bg-red-50 border border-red-200 text-red-700 px-4 py-3 rounded-xl text-sm">
-      ❌ {{ flash.error }}
+      {{ flash.error }}
     </div>
 
     <!-- ── Tables List ─────────────────────────────────────────────────────── -->
     <div class="bg-white rounded-2xl shadow-sm overflow-hidden">
-      <div class="px-6 py-4 border-b border-gray-100 flex items-center justify-between">
-        <h2 class="text-base font-semibold text-gray-700">Daftar Meja ({{ tables.total }})</h2>
-      </div>
+
 
       <div v-if="!tables.data.length" class="text-center text-gray-400 py-16">
         <BuildingStorefrontIcon class="w-12 h-12 mx-auto mb-4" />
@@ -35,7 +33,7 @@
               <th class="px-5 py-3">Status</th>
               <th class="px-5 py-3">QR Code</th>
               <th class="px-5 py-3">Total Pesanan</th>
-              <th class="px-5 py-3 text-right">Aksi</th>
+              <th class="px-5 py-3 text-center">Aksi</th>
             </tr>
           </thead>
           <tbody class="divide-y divide-gray-100">
@@ -100,8 +98,8 @@
               <td class="px-5 py-3 text-gray-500">{{ table.orders_count }}</td>
 
               <!-- Actions -->
-              <td class="px-5 py-3">
-                <div class="flex items-center justify-end gap-2 flex-wrap">
+              <td class="px-5 py-3 text-center">
+                <div class="flex items-center justify-center gap-2 flex-wrap">
                   <!-- Save inline edit -->
                   <button
                     v-if="editingId === table.id"

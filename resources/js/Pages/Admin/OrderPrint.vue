@@ -4,8 +4,8 @@
       <!-- Header -->
       <div class="text-center mb-8 border-b-2 border-black pb-6">
         <h1 class="text-3xl font-bold text-gray-900">Bakmi Jawa Mas Agus</h1>
-        <p class="text-sm text-gray-600 mt-1">Jl. Contoh No.123, Kota Contoh</p>
-        <p class="text-sm text-gray-600">Telp: 0812-3456-7890</p>
+        <p class="text-sm text-gray-600 mt-1">Jl. Raya Jakarta-Bogor No.4, Sukamaju Baru, Kec. Tapos, Kota Depok, Jawa Barat 16416</p>
+        <p class="text-sm text-gray-600">Telp: 0813-1772-5228</p>
       </div>
 
       <!-- Order Info -->
@@ -30,10 +30,6 @@
           <div>
             <p class="text-gray-500">Meja</p>
             <p class="font-semibold">{{ order.table?.name ?? '—' }}</p>
-          </div>
-          <div>
-            <p class="text-gray-500">Status</p>
-            <p class="font-semibold">{{ statusLabel(order.status) }}</p>
           </div>
         </div>
         <div v-if="order.notes" class="mt-3">

@@ -11,13 +11,13 @@ export function useFormat() {
 
   const formatDate = (date) => {
     if (!date) return '-'
-    return new Intl.DateTimeFormat('id-ID', {
-      year: 'numeric',
-      month: 'long',
-      day: 'numeric',
-      hour: '2-digit',
-      minute: '2-digit',
-    }).format(new Date(date))
+    const d = new Date(date)
+    const day = d.getDate()
+    const month = d.toLocaleString('id-ID', { month: 'long' })
+    const year = d.getFullYear()
+    const hours = String(d.getHours()).padStart(2, '0')
+    const minutes = String(d.getMinutes()).padStart(2, '0')
+    return `${day} ${month} ${year} pukul ${hours}.${minutes}`
   }
 
   const formatTime = (date) => {

@@ -27,9 +27,11 @@
           <tbody class="divide-y divide-gray-100">
             <tr v-for="cat in categories.data" :key="cat.id" class="hover:bg-gray-50 transition-colors">
               <td class="px-5 py-3">
-                <span class="text-gray-500 text-base font-semibold">{{ cat.name }}</span>
+                <p class="font-medium text-gray-800">{{ cat.name }}</p>
               </td>
-              <td class="px-5 py-3 text-gray-500">{{ cat.menus_count }} menu</td>
+              <td class="px-5 py-3">
+                <span class="text-gray-600 text-sm">{{ cat.menus_count }} menu</span>
+              </td>
               <td class="px-5 py-3 text-center space-x-2">
                 <button @click="openEdit(cat)" class="py-2 px-3 border border-blue-300 text-blue-700 bg-blue-50 rounded-md text-sm font-medium hover:bg-blue-100 hover:border-blue-400 active:bg-blue-200 transition focus:outline-none focus:ring-2 focus:ring-blue-300">
                   Edit
@@ -40,7 +42,9 @@
               </td>
             </tr>
             <tr v-if="categories.data.length === 0">
-              <td colspan="3" class="px-5 py-10 text-center text-gray-400">Belum ada kategori. Klik "Tambah Kategori" untuk mulai.</td>
+              <td colspan="3" class="px-5 py-10 text-center text-gray-400">
+                Belum ada kategori. Klik "Tambah Kategori" untuk mulai.
+              </td>
             </tr>
           </tbody>
         </table>

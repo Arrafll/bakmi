@@ -35,21 +35,21 @@ class DashboardService
         $startOfWeek = now()->subDays(6)->startOfDay();
 
         $orders = Order::select(
-            DB::raw('DAYNAME(created_at) as day_name'),
+            DB::raw('DATE(created_at) as order_date'),
             DB::raw('COUNT(*) as count')
         )
             ->where('created_at', '>=', $startOfWeek)
-            ->groupBy('day_name')
+            ->groupBy('order_date')
             ->get()
-            ->keyBy('day_name');
+            ->keyBy('order_date');
 
         $result = [];
         $currentDate = $startOfWeek->copy();
 
         for ($i = 0; $i < 7; $i++) {
-            $dayName = $currentDate->format('D');
+            $dateKey = $currentDate->toDateString();
             $dayLabel = $days[$currentDate->dayOfWeek];
-            $count = $orders->has($dayName) ? $orders[$dayName]->count : 0;
+            $count = $orders->has($dateKey) ? $orders[$dateKey]->count : 0;
 
             $result[] = [
                 'day' => $dayLabel,

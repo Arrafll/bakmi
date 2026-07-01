@@ -16,6 +16,7 @@ const props = defineProps({
 
 const STATUS_MAP = {
   pesan: { label: 'Dipesan', cls: 'bg-yellow-100 text-yellow-700' },
+  dipesan: { label: 'Dipesan', cls: 'bg-yellow-100 text-yellow-700' },
   diproses: { label: 'Diproses', cls: 'bg-blue-100 text-blue-700' },
   selesai: { label: 'Selesai', cls: 'bg-green-100 text-green-700' },
   dibatalkan: { label: 'Dibatalkan', cls: 'bg-red-100 text-red-700' },

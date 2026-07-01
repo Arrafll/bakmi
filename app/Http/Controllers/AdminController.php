@@ -79,7 +79,7 @@ class AdminController extends Controller
     public function ordersIndex()
     {
         $orders = Order::with(['table:id,name', 'items.menu:id,name,price'])
-            ->orderByDesc('created_at')
+            ->orderBy('created_at', 'asc')
             ->paginate(10);
 
         return Inertia::render('Admin/Orders', [

@@ -54,7 +54,7 @@ class TableController extends Controller
         // Pre-generate QR code immediately
         $this->qrService->generate($table);
 
-        return back()->with('success', "Table \"{$table->name}\" created.");
+        return back()->with('success', "Data \"{$table->name}\" berhasil ditambahkan.");
     }
 
     // ── Update ───────────────────────────────────────────────────────────────
@@ -68,7 +68,7 @@ class TableController extends Controller
 
         $table->update($data);
 
-        return back()->with('success', 'Table updated.');
+        return back()->with('success', "Data \"{$table->name}\" berhasil diperbarui.");
     }
 
     // ── Delete ───────────────────────────────────────────────────────────────
