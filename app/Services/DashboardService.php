@@ -83,7 +83,7 @@ class DashboardService
             $percent = round(($item->total_ordered / $totalQuantity) * 100);
 
             return [
-                'label' => $item->menu->name,
+                'label' => $item->menu?->name,
                 'percent' => $percent,
                 'color' => $colors[$index % count($colors)],
                 'total_ordered' => $item->total_ordered

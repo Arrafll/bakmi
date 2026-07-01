@@ -1,5 +1,5 @@
 <template>
-  <AdminLayout title="Master Menu">
+  <AdminLayout title="Data Menu">
     <!-- Header bar -->
     <div class="flex items-center justify-between mb-6">
       <p class="text-sm text-gray-500">{{ menus.total }} item menu</p>

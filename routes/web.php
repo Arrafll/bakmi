@@ -39,7 +39,6 @@ Route::get('/order/{qr_token}', [TableQrController::class, 'enter'])
 // ── Cart routes ───────────────────────────────────────────────────────────────
 // table.session middleware: ensures a QR scan established a table context first.
 Route::middleware(['table.session', 'throttle:cart'])->group(function () {
-    Route::get('/cart', [CartController::class, 'index'])->name('cart.index');
     Route::post('/cart/add', [CartController::class, 'add'])->name('cart.add');
     Route::post('/cart/update', [CartController::class, 'update'])->name('cart.update');
     Route::post('/cart/remove', [CartController::class, 'remove'])->name('cart.remove');
@@ -60,11 +59,10 @@ Route::post('/voucher/apply', [VoucherController::class, 'apply'])
     ->name('voucher.apply')
     ->middleware('table.session');
 
-// ── Admin auth routes (guests only) ──────────────────────────────────────────
-Route::middleware('guest')->group(function () {
-    Route::get('/admin', [AdminController::class, 'showLogin'])->name('admin.login');
-    Route::post('/admin/login', [AdminController::class, 'login'])->name('admin.login.post');
-});
+// ── Admin auth routes ──────────────────────────────────────────────────────────
+Route::get('/admin', [AdminController::class, 'showLogin'])->name('admin.login');
+Route::post('/admin/login', [AdminController::class, 'login'])->name('admin.login.post')
+    ->middleware('guest');
 
 // ── Admin protected routes ────────────────────────────────────────────────────
 Route::middleware('admin.auth')->prefix('admin')->name('admin.')->group(function () {

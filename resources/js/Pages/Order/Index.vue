@@ -68,18 +68,30 @@
           <!-- Cart Items -->
           <div class="flex-1 overflow-y-auto px-5 py-4 space-y-3">
             <div v-if="!cartItems.length" class="text-center text-gray-400 py-16">
-              <p class="text-4xl mb-3">🛒</p>
+              <ShoppingCartIcon class="w-12 h-12 mx-auto mb-4" />
               <p>Keranjang kosong</p>
             </div>
 
             <div
               v-for="item in cartItems"
               :key="item.menu_id"
-              class="flex items-center gap-3 bg-amber-50 rounded-xl p-3"
+              class="flex items-center gap-3 bg-white rounded-xl p-3 border border-gray-100"
             >
+              <!-- Thumbnail -->
+              <div class="w-14 h-14 rounded-lg overflow-hidden bg-amber-100 flex-shrink-0">
+                <img
+                  v-if="item.image_path"
+                  :src="asset('/storage/' + item.image_path)"
+                  :alt="item.name"
+                  class="w-full h-full object-cover"
+                />
+                <div v-else class="w-full h-full flex items-center justify-center text-xl">🍜</div>
+              </div>
+
+              <!-- Name & Price -->
               <div class="flex-1 min-w-0">
-                <p class="font-semibold text-gray-800 truncate">{{ item.name }}</p>
-                <p class="text-sm text-amber-700">{{ formatPrice(item.price) }}</p>
+                <p class="font-semibold text-gray-800 truncate text-sm">{{ item.name }}</p>
+                <p class="text-xs text-gray-500 mt-0.5">{{ formatPrice(item.price) }}</p>
               </div>
 
               <!-- Quantity Controls -->
@@ -87,25 +99,21 @@
                 <button
                   @click="updateCart(item.menu_id, item.quantity - 1)"
                   :disabled="updating"
-                  class="w-8 h-8 flex items-center justify-center bg-amber-700 hover:bg-amber-600
+                  class="w-7 h-7 flex items-center justify-center bg-amber-700 hover:bg-amber-600
                          text-white rounded-full font-bold text-lg disabled:opacity-50 transition-colors"
                 >
-                  {{ item.quantity === 1 ? '🗑' : '−' }}
+                  −
                 </button>
-                <span class="w-6 text-center font-bold">{{ item.quantity }}</span>
+                <span class="w-6 text-center font-medium text-gray-800 text-sm">{{ item.quantity }}</span>
                 <button
                   @click="updateCart(item.menu_id, item.quantity + 1)"
                   :disabled="updating"
-                  class="w-8 h-8 flex items-center justify-center bg-amber-700 hover:bg-amber-600
+                  class="w-7 h-7 flex items-center justify-center bg-amber-700 hover:bg-amber-600
                          text-white rounded-full font-bold text-lg disabled:opacity-50 transition-colors"
                 >
                   +
                 </button>
               </div>
-
-              <p class="w-24 text-right font-bold text-gray-800 flex-shrink-0">
-                {{ formatPrice(item.price * item.quantity) }}
-              </p>
             </div>
           </div>
 
@@ -195,7 +203,7 @@
                        transition-colors disabled:opacity-50 flex items-center justify-center gap-2"
               >
                 <span v-if="submitting">Memproses…</span>
-                <span v-else>Pesan Sekarang 🍜</span>
+                <span v-else>Pesan Sekarang</span>
               </button>
             </form>
           </div>
@@ -213,8 +221,10 @@ import CustomerLayout from '@/Layouts/CustomerLayout.vue'
 import AppFooter from '@/Components/AppFooter.vue'
 import CategoryFilter from '@/Components/CategoryFilter.vue'
 import { router, usePage } from '@inertiajs/vue3'
+import {route} from 'ziggy-js'
 import { ShoppingCartIcon, XMarkIcon } from '@heroicons/vue/24/outline'
 import MenuCard from '@/Components/MenuCard.vue'
+import { asset } from '@/utils/asset'
 
 // ── Props (injected by server – NEVER trusted from localStorage) ──────────────
 const props = defineProps({

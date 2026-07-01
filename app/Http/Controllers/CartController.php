@@ -5,7 +5,6 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use App\Models\CartItem;
 use App\Models\Menu;
-use Inertia\Inertia;
 
 class CartController extends Controller
 {
@@ -23,23 +22,14 @@ class CartController extends Controller
             ->where('session_id', $sessionId)
             ->get()
             ->map(fn ($row) => [
-                'menu_id'  => $row->menu_id,
-                'name'     => $row->menu?->name ?? '',
-                'price'    => (float) ($row->menu?->price ?? 0),
-                'image'    => $row->menu?->image,
-                'quantity' => $row->quantity,
+                'menu_id'    => $row->menu_id,
+                'name'       => $row->menu?->name ?? '',
+                'price'      => (float) ($row->menu?->price ?? 0),
+                'image_path' => $row->menu?->image_path,
+                'quantity'   => $row->quantity,
             ])
             ->values()
             ->all();
-    }
-
-    public function index(Request $request)
-    {
-        $sessionId = $this->sessionId($request);
-
-        return Inertia::render('Cart', [
-            'cart' => self::cartForSession($sessionId),
-        ]);
     }
 
     public function add(Request $request)

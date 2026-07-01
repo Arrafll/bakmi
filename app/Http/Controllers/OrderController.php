@@ -30,15 +30,30 @@ class OrderController extends Controller
             return back()->withErrors(['cart' => $e->getMessage()]);
         }
 
-        return redirect()->route('order.success', $order->id);
+        // Pass table context via session flash for the success page
+        return redirect()
+            ->route('order.success', $order->id)
+            ->with('table_context', $tableContext);
     }
 
     public function success($id)
     {
         $order = Order::with('items.menu')->findOrFail($id);
 
+        // Get table context from flash or session
+        $tableContext = session('table_context') ?? session('table');
+
+        // If we have a table ID, fetch the QR token from database
+        if ($tableContext && isset($tableContext['id'])) {
+            $table = \App\Models\RestaurantTable::find($tableContext['id']);
+            if ($table) {
+                $tableContext['qr_token'] = $table->qr_token;
+            }
+        }
+
         return Inertia::render('OrderSuccess', [
             'order' => $order,
+            'table' => $tableContext,
         ]);
     }
 }

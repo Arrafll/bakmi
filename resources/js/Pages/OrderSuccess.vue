@@ -1,5 +1,5 @@
 <template>
-  <CustomerLayout title="✅ Pesanan Berhasil">
+  <CustomerLayout title="Pesanan Dibuat">
     <main class="max-w-2xl mx-auto px-4 py-10">
       <div class="bg-white rounded-2xl shadow-md p-8">
         <!-- Success header -->
@@ -60,7 +60,7 @@
 
         <!-- CTA -->
         <Link
-          :href="route('home')"
+          :href="table?.qr_token ? `/order/${table.qr_token}` : '/'"
           class="w-full block text-center bg-amber-700 hover:bg-amber-600 text-white font-bold py-3 rounded-xl transition-colors text-lg"
         >
           Pesan Lagi
@@ -79,6 +79,10 @@ const props = defineProps({
   order: {
     type: Object,
     required: true,
+  },
+  table: {
+    type: Object,
+    default: null,
   },
 })
 
