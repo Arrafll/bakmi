@@ -169,7 +169,15 @@
               </div>
             </div>
 
-            <button @click="detailOrder = null" class="w-full py-2 border border-gray-300 text-gray-600 rounded-xl text-sm hover:bg-gray-50 transition-colors">
+            <div v-if="detailOrder.status === 'selesai'" class="flex gap-3">
+              <button @click="printOrder(detailOrder.id)" class="flex-1 py-2 border-2 border-green-600 text-green-700 bg-white rounded-xl text-sm font-semibold hover:bg-green-50 transition-colors">
+                Cetak
+              </button>
+              <button @click="detailOrder = null" class="flex-1 py-2 border border-gray-300 text-gray-600 rounded-xl text-sm hover:bg-gray-50 transition-colors">
+                Tutup
+              </button>
+            </div>
+            <button v-else @click="detailOrder = null" class="w-full py-2 border border-gray-300 text-gray-600 rounded-xl text-sm hover:bg-gray-50 transition-colors">
               Tutup
             </button>
           </div>
@@ -232,13 +240,6 @@
 
           <div class="flex gap-3">
             <button @click="statusTarget = null" class="flex-1 py-2 border border-gray-300 text-gray-600 rounded-xl text-sm hover:bg-gray-50 transition-colors">Batal</button>
-            <button
-              v-if="selectedStatus === 'selesai'"
-              @click="printOrder"
-              class="flex-1 py-2 border-2 border-green-600 text-green-700 bg-white rounded-xl text-sm font-semibold hover:bg-green-50 transition-colors"
-            >
-              Cetak
-            </button>
             <button @click="doUpdateStatus" :disabled="submitting || selectedStatus === statusTarget.status" class="flex-1 py-2 bg-amber-700 hover:bg-amber-600 disabled:opacity-50 text-white rounded-xl text-sm font-semibold transition-colors">
               {{ submitting ? 'Menyimpan...' : 'Simpan' }}
             </button>
@@ -349,8 +350,8 @@ function calculateSubtotal(order) {
   return order.items.reduce((sum, item) => sum + (item.price * item.quantity), 0)
 }
 
-function printOrder() {
-  const printUrl = route('admin.orders.print', statusTarget.value.id)
+function printOrder(orderId) {
+  const printUrl = route('admin.orders.print', orderId)
   window.open(printUrl, '_blank')
 }
 
