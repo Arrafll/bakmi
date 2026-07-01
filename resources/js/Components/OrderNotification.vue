@@ -58,6 +58,7 @@
 import { ref, onMounted, onUnmounted } from 'vue'
 import { Link } from '@inertiajs/vue3'
 import { route } from 'ziggy-js'
+import { asset } from '@/utils/asset'
 
 const props = defineProps({
     initialOrder: Object,
@@ -73,7 +74,7 @@ function formatPrice(value) {
 
 function playNotificationSound() {
     try {
-        audio = new Audio('/sounds/order-notif.wav')
+        audio = new Audio(asset('/sounds/order-notif.wav'))
         audio.volume = 0.5
         audio.play().catch(() => {
             // Ignore autoplay errors

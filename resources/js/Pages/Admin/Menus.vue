@@ -291,7 +291,9 @@ function submitForm() {
   }
 
   if (modal.value.isEdit) {
-    router.put(route('admin.menus.update', modal.value.editId), data, {
+    // Use POST with _method override for file uploads (PUT doesn't work well with FormData)
+    data.append('_method', 'PUT')
+    router.post(route('admin.menus.update', modal.value.editId), data, {
       onFinish: () => { submitting.value = false; modal.value.open = false; imagePreview.value = null },
     })
   } else {
