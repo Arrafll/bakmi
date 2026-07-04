@@ -14,7 +14,12 @@ class DatabaseSeeder extends Seeder
     {
         $this->call(CategorySeeder::class);
         $this->call(MenuSeeder::class);
+	$this->call(CategorySeeder::class);
         $this->call(UserSeeder::class);
+<<<<<<< Updated upstream
         $this->call(SawCriteriaSeeder::class);
+=======
+        $this->call(AssessmentCriteriaSeeder::class);
+>>>>>>> Stashed changes
     }
 }

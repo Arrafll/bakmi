@@ -55,13 +55,11 @@ class AdminController extends Controller
         $stats = $this->dashboardService->getStats();
         $recentOrders = $this->dashboardService->getRecentOrders();
         $weeklyOrders = $this->dashboardService->getWeeklyOrders();
-        $favoriteMenus = $this->dashboardService->getFavoriteMenus();
 
         return Inertia::render('Admin/Dashboard', [
             'stats' => $stats,
             'recentOrders' => $recentOrders,
             'weeklyOrders' => $weeklyOrders,
-            'favoriteMenus' => $favoriteMenus,
         ]);
     }
 

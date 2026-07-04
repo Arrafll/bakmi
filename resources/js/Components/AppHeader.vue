@@ -14,6 +14,7 @@
                         <p class="text-amber-200 text-sm mt-0.5">{{ subtitle || 'Bakmi Jawa Cita Rasa Khas' }}</p>
                     </div>
                 </div>
+<<<<<<< Updated upstream
                 <div v-if="$page.url !== '/'">
                 <Link :href="route('cart.index')"
                     class="relative flex items-center gap-2 bg-amber-700 hover:bg-amber-600 transition-colors px-4 py-2 rounded-full flex-shrink-0">
@@ -25,6 +26,10 @@
                     </span>
                 </Link>
                 </div>
+=======
+
+                <slot name="actions" />
+>>>>>>> Stashed changes
             </div>
     </header>
 </template>

@@ -1,8 +1,16 @@
 <?php
 
+<<<<<<< Updated upstream
 use App\Http\Controllers\Admin\SpkController;
+=======
+use App\Http\Controllers\Admin\CriteriaController;
+use App\Http\Controllers\Admin\MenuScoreController;
+use App\Http\Controllers\Admin\RecommendationController;
+use App\Http\Controllers\Admin\ReviewSubmissionController;
+>>>>>>> Stashed changes
 use App\Http\Controllers\Admin\TableController;
 use App\Http\Controllers\AdminController;
+use App\Http\Controllers\MenuReviewController;
 use App\Http\Controllers\CartController;
 use App\Http\Controllers\OrderController;
 use App\Http\Controllers\RecommendationController;
@@ -57,6 +65,12 @@ Route::get('/order/{id}/success', [OrderController::class, 'success'])
     ->name('order.success')
     ->where('id', '[0-9]+'); // only numeric IDs – prevents clash with qr_token route
 
+// Post-order menu evaluation questionnaire
+Route::get('/orders/{order}/review', [MenuReviewController::class, 'create'])
+    ->name('orders.review.show');
+Route::post('/orders/{order}/review', [MenuReviewController::class, 'store'])
+    ->name('orders.review.store');
+
 // Voucher apply (customer-facing)
 Route::post('/voucher/apply', [VoucherController::class, 'apply'])
     ->name('voucher.apply')
@@ -100,6 +114,7 @@ Route::middleware('admin.auth')->prefix('admin')->name('admin.')->group(function
     Route::put('/vouchers/{voucher}', [AdminController::class, 'vouchersUpdate'])->name('vouchers.update');
     Route::delete('/vouchers/{voucher}', [AdminController::class, 'vouchersDestroy'])->name('vouchers.destroy');
 
+<<<<<<< Updated upstream
     // ── SPK / DSS ──────────────────────────────────────────────────────────────
     Route::prefix('spk')->name('spk.')->group(function () {
         Route::get('/', [SpkController::class, 'index'])->name('index');
@@ -107,6 +122,22 @@ Route::middleware('admin.auth')->prefix('admin')->name('admin.')->group(function
         Route::put('/scores', [SpkController::class, 'updateScores'])->name('scores.update');
     });
 
+=======
+    // ── Menu recommendation engine ────────────────────────────────────────────
+    Route::prefix('criteria')->name('criteria.')->group(function () {
+        Route::get('/', [CriteriaController::class, 'index'])->name('index');
+        Route::post('/', [CriteriaController::class, 'store'])->name('store');
+        Route::put('/{criterion}', [CriteriaController::class, 'update'])->name('update');
+        Route::delete('/{criterion}', [CriteriaController::class, 'destroy'])->name('destroy');
+    });
+
+    Route::get('/menu-scores', [MenuScoreController::class, 'index'])->name('menu-scores.index');
+
+    Route::get('/recommendations', [RecommendationController::class, 'index'])->name('recommendations.index');
+
+    Route::get('/review-submissions', [ReviewSubmissionController::class, 'index'])->name('review-submissions.index');
+
+>>>>>>> Stashed changes
     // ── Table / QR management ─────────────────────────────────────────────────
     Route::prefix('tables')->name('tables.')->group(function () {
         Route::get('/', [TableController::class, 'index'])->name('index');

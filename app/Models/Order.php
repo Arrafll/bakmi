@@ -23,6 +23,11 @@ class Order extends Model
         return $this->hasMany(OrderItem::class);
     }
 
+    public function reviews()
+    {
+        return $this->hasMany(MenuReview::class);
+    }
+
     public function table()
     {
         return $this->belongsTo(RestaurantTable::class, 'table_id');

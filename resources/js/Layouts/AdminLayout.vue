@@ -22,15 +22,42 @@
 
             <!-- Nav -->
             <nav class="flex-1 px-3 py-4 space-y-1 overflow-y-auto">
-                <Link v-for="item in menus" :key="item.route" :href="route(item.route)" :class="[
-                    'flex items-center gap-3 px-3 py-2 rounded-lg text-sm font-medium transition-colors',
-                    isActive(route(item.route))
-                        ? 'bg-amber-700 text-white'
-                        : 'text-amber-100 hover:bg-amber-800',
-                ]">
-                    <component :is="item.icon" class="w-4 h-4 flex-shrink-0" />
-                    {{ item.label }}
-                </Link>
+                <template v-for="item in menus" :key="item.label">
+                    <!-- Leaf item -->
+                    <Link v-if="!item.children" :href="route(item.route)" :class="[
+                        'flex items-center gap-3 px-3 py-2 rounded-lg text-sm font-medium transition-colors',
+                        isActive(item.route)
+                            ? 'bg-amber-700 text-white'
+                            : 'text-amber-100 hover:bg-amber-800',
+                    ]">
+                        <component :is="item.icon" class="w-4 h-4 flex-shrink-0" />
+                        {{ item.label }}
+                    </Link>
+
+                    <!-- Group item with sub-menus -->
+                    <div v-else>
+                        <button type="button" @click="toggleGroup(item.label)" :class="[
+                            'w-full flex items-center gap-3 px-3 py-2 rounded-lg text-sm font-medium transition-colors',
+                            groupHasActiveChild(item)
+                                ? 'bg-amber-800 text-white'
+                                : 'text-amber-100 hover:bg-amber-800',
+                        ]">
+                            <component :is="item.icon" class="w-4 h-4 flex-shrink-0" />
+                            <span class="flex-1 text-left">{{ item.label }}</span>
+                            <ChevronDownIcon :class="['w-4 h-4 flex-shrink-0 transition-transform', isGroupOpen(item.label) ? 'rotate-180' : '']" />
+                        </button>
+                        <div v-show="isGroupOpen(item.label)" class="mt-1 ml-4 pl-3 border-l border-amber-700 space-y-1">
+                            <Link v-for="child in item.children" :key="child.route" :href="route(child.route)" :class="[
+                                'block px-3 py-2 rounded-lg text-sm font-medium transition-colors',
+                                isActive(child.route)
+                                    ? 'bg-amber-700 text-white'
+                                    : 'text-amber-200 hover:bg-amber-800',
+                            ]">
+                                {{ child.label }}
+                            </Link>
+                        </div>
+                    </div>
+                </template>
             </nav>
 
         </aside>
@@ -86,7 +113,11 @@ import { Link, router, usePage } from '@inertiajs/vue3'
 import { route } from 'ziggy-js'
 import { computed } from 'vue'
 import { Head } from '@inertiajs/vue3'
+<<<<<<< Updated upstream
 import { HomeIcon, ClipboardDocumentListIcon, TicketIcon, QrCodeIcon, TagIcon, ArrowLeftEndOnRectangleIcon, SparklesIcon } from '@heroicons/vue/24/outline'
+=======
+import { HomeIcon, ClipboardDocumentListIcon, TicketIcon, QrCodeIcon, TagIcon, ArrowLeftEndOnRectangleIcon, SparklesIcon, ChevronDownIcon } from '@heroicons/vue/24/outline'
+>>>>>>> Stashed changes
 import OrderNotification from '@/Components/OrderNotification.vue'
 import Pusher from 'pusher-js'
 import Swal from 'sweetalert2'
@@ -235,16 +266,44 @@ const menus = [
         route: 'admin.tables.index',
     },
     {
+<<<<<<< Updated upstream
         label: 'Menu Unggulan',
         icon: SparklesIcon,
         route: 'admin.spk.index',
+=======
+        label: 'Menu Rekomendasi',
+        icon: SparklesIcon,
+        children: [
+            { label: 'Peringkat Menu', route: 'admin.recommendations.index' },
+            { label: 'Kriteria Penilaian', route: 'admin.criteria.index' },
+            { label: 'Penilaian Menu', route: 'admin.menu-scores.index' },
+            { label: 'Riwayat Penilaian Pelanggan', route: 'admin.review-submissions.index' },
+        ],
+>>>>>>> Stashed changes
     },
 ]
 
-const isActive = (href) => {
-    const current = page.url
-    const target = new URL(href, window.location.origin).pathname
-    return current.startsWith(target)
+const isActive = (routeName) => {
+    const target = new URL(route(routeName), window.location.origin).pathname
+    return page.url.startsWith(target)
+}
+
+const groupHasActiveChild = (item) => item.children.some((child) => isActive(child.route))
+
+const openGroups = ref(new Set(
+    menus.filter((item) => item.children && groupHasActiveChild(item)).map((item) => item.label)
+))
+
+const isGroupOpen = (label) => openGroups.value.has(label)
+
+function toggleGroup(label) {
+    const next = new Set(openGroups.value)
+    if (next.has(label)) {
+        next.delete(label)
+    } else {
+        next.add(label)
+    }
+    openGroups.value = next
 }
 
 </script>

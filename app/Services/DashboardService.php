@@ -5,7 +5,6 @@ namespace App\Services;
 use App\Models\Order;
 use App\Models\Menu;
 use App\Models\Voucher;
-use App\Models\OrderItem;
 use Illuminate\Support\Facades\DB;
 
 class DashboardService
@@ -61,6 +60,7 @@ class DashboardService
 
         return $result;
     }
+<<<<<<< Updated upstream
 
     public function getFavoriteMenus(int $limit = 5): array
     {
@@ -90,4 +90,6 @@ class DashboardService
             ];
         })->toArray();
     }
+=======
+>>>>>>> Stashed changes
 }

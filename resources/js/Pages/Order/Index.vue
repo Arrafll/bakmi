@@ -1,5 +1,6 @@
 <template>
   <CustomerLayout title="Keranjang" subtitle="Periksa pesanan Anda">
+<<<<<<< Updated upstream
     <div class="max-w-6xl mx-auto px-4 mt-8 flex items-center gap-3 flex-wrap">
       <div class="flex-1 min-w-0">
         <CategoryFilter :categories="categories" v-model="activeCategory" />
@@ -12,6 +13,22 @@
         </svg>
         Rekomendasi
       </Link>
+=======
+    <template #header-actions>
+      <Link
+        v-if="pendingReview"
+        :href="route('orders.review.show', pendingReview.order_id)"
+        class="flex items-center gap-1.5 bg-white/15 hover:bg-white/25 text-white text-sm font-semibold px-3 py-2 rounded-xl transition-colors flex-shrink-0"
+      >
+        <ClipboardDocumentCheckIcon class="w-4 h-4" /> Isi Penilaian Menu
+      </Link>
+    </template>
+
+    <RecommendedMenuSection :items="recommendations" />
+
+    <div class="max-w-6xl mx-auto px-4 mt-8">
+      <CategoryFilter :categories="categories" v-model="activeCategory" />
+>>>>>>> Stashed changes
     </div>
 
     <!-- ── Menu Grid ─────────────────────────────────────────────────────── -->
@@ -87,6 +104,21 @@
               :key="item.menu_id"
               class="flex items-center gap-3 bg-amber-50 rounded-xl p-3"
             >
+<<<<<<< Updated upstream
+=======
+              <!-- Thumbnail -->
+              <div class="w-14 h-14 rounded-lg overflow-hidden bg-amber-100 flex-shrink-0">
+                <img
+                  v-if="item.image_path"
+                  :src="menuImage(item.image_path)"
+                  :alt="item.name"
+                  class="w-full h-full object-cover"
+                />
+                <div v-else class="w-full h-full flex items-center justify-center text-xl">🍜</div>
+              </div>
+
+              <!-- Name & Price -->
+>>>>>>> Stashed changes
               <div class="flex-1 min-w-0">
                 <p class="font-semibold text-gray-800 truncate">{{ item.name }}</p>
                 <p class="text-sm text-amber-700">{{ formatPrice(item.price) }}</p>
@@ -222,10 +254,19 @@ import { ref, computed } from 'vue'
 import CustomerLayout from '@/Layouts/CustomerLayout.vue'
 import AppFooter from '@/Components/AppFooter.vue'
 import CategoryFilter from '@/Components/CategoryFilter.vue'
+<<<<<<< Updated upstream
 import { router, usePage, Link } from '@inertiajs/vue3'
 import { route } from 'ziggy-js'
 import { ShoppingCartIcon, XMarkIcon } from '@heroicons/vue/24/outline'
 import MenuCard from '@/Components/MenuCard.vue'
+=======
+import { Link, router, usePage } from '@inertiajs/vue3'
+import {route} from 'ziggy-js'
+import { ShoppingCartIcon, XMarkIcon, ClipboardDocumentCheckIcon } from '@heroicons/vue/24/outline'
+import MenuCard from '@/Components/MenuCard.vue'
+import RecommendedMenuSection from '@/Components/RecommendedMenuSection.vue'
+import { menuImage } from '@/utils/asset'
+>>>>>>> Stashed changes
 
 // ── Props (injected by server – NEVER trusted from localStorage) ──────────────
 const props = defineProps({
@@ -239,6 +280,14 @@ const props = defineProps({
   },
   categories: {
     type: Array,
+    default: null,
+  },
+  recommendations: {
+    type: Array,
+    default: () => [],
+  },
+  pendingReview: {
+    type: Object,
     default: null,
   },
 })

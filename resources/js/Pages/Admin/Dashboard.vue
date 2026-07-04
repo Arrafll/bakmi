@@ -12,37 +12,15 @@
             />
         </div>
 
-        <!-- Charts row -->
-        <div class="grid grid-cols-1 lg:grid-cols-2 gap-5 mb-8">
-            <!-- Weekly orders bar chart -->
-            <div class="bg-white rounded-2xl shadow-sm p-6">
-                <h2 class="text-base font-semibold text-gray-700 mb-5">Pesanan 7 Hari Terakhir</h2>
-                <div class="flex items-end gap-2 h-32">
-                    <div v-for="(d, i) in weeklyOrders" :key="i" class="flex-1 flex flex-col items-center gap-1">
-                        <span class="text-xs text-gray-500">{{ d.count }}</span>
-                        <div class="w-full bg-amber-500 rounded-t-md"
-                            :style="{ height: Math.max(4, d.count / maxWeekly * 100) + 'px' }" />
-                        <span class="text-xs text-gray-400">{{ d.day }}</span>
-                    </div>
-                </div>
-            </div>
-
-            <!-- Favorite menus -->
-            <div class="bg-white rounded-2xl shadow-sm p-6">
-                <h2 class="text-base font-semibold text-gray-700 mb-4">Menu Favorit</h2>
-                <div v-if="favoriteMenus.length === 0" class="py-8 text-center text-gray-400 text-sm">
-                    Belum ada data pesanan
-                </div>
-                <div v-else class="space-y-3">
-                    <div v-for="(c, i) in favoriteMenus" :key="i">
-                        <div class="flex justify-between text-sm mb-1">
-                            <span class="text-gray-700">{{ c.label }}</span>
-                            <span class="text-gray-400 font-medium">{{ c.percent }}%</span>
-                        </div>
-                        <div class="h-2 bg-gray-100 rounded-full overflow-hidden">
-                            <div :class="[c.color, 'h-full rounded-full']" :style="{ width: c.percent + '%' }" />
-                        </div>
-                    </div>
+        <!-- Weekly orders bar chart -->
+        <div class="bg-white rounded-2xl shadow-sm p-6 mb-8">
+            <h2 class="text-base font-semibold text-gray-700 mb-5">Pesanan 7 Hari Terakhir</h2>
+            <div class="flex items-end gap-2 h-32">
+                <div v-for="(d, i) in weeklyOrders" :key="i" class="flex-1 flex flex-col items-center gap-1">
+                    <span class="text-xs text-gray-500">{{ d.count }}</span>
+                    <div class="w-full bg-amber-500 rounded-t-md"
+                        :style="{ height: Math.max(4, d.count / maxWeekly * 100) + 'px' }" />
+                    <span class="text-xs text-gray-400">{{ d.day }}</span>
                 </div>
             </div>
         </div>
@@ -117,18 +95,12 @@ const props = defineProps({
         type: Array,
         default: () => []
     },
-    favoriteMenus: {
-        type: Array,
-        default: () => []
-    },
 })
 
 const { formatPrice } = useFormat()
 
 const weeklyOrders = props.weeklyOrders
 const maxWeekly = weeklyOrders.length > 0 ? Math.max(...weeklyOrders.map(d => d.count)) : 0
-
-const favoriteMenus = props.favoriteMenus
 
 const statItems = [
     { icon: ShoppingCartIcon, label: 'Pesanan Hari Ini', value: props.stats.orders_today, color: 'bg-blue-500' },

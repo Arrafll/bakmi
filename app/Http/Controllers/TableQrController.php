@@ -5,7 +5,9 @@ namespace App\Http\Controllers;
 use App\Models\CartItem;
 use App\Models\Category;
 use App\Models\Menu;
+use App\Models\Order;
 use App\Models\RestaurantTable;
+use App\Services\MenuRecommendationService;
 use Illuminate\Http\Request;
 use Illuminate\Support\Str;
 use Inertia\Inertia;
@@ -13,6 +15,8 @@ use Inertia\Response;
 
 class TableQrController extends Controller
 {
+    public function __construct(private MenuRecommendationService $recommendationService) {}
+
     /**
      * QR Entry Point: GET /order/{qr_token}
      *
@@ -45,6 +49,8 @@ class TableQrController extends Controller
                     ->orderBy('name')
                     ->get(['id', 'name', 'description', 'price', 'category', 'image_path', 'is_available']),
                 'categories' => Category::orderBy('name')->pluck('name'),
+                'recommendations' => $this->recommendationService->getTopRecommendations(5),
+                'pendingReview' => $this->resolvePendingReview($request->session()->get('table.session_id')),
             ]);
         }
 
@@ -77,6 +83,34 @@ class TableQrController extends Controller
                 ->orderBy('name')
                 ->get(['id', 'name', 'description', 'price', 'category', 'image_path', 'is_available']),
             'categories' => Category::orderBy('name')->pluck('name'),
+            'recommendations' => $this->recommendationService->getTopRecommendations(5),
+            'pendingReview' => $this->resolvePendingReview($tableSessionId),
         ]);
+    }
+
+    /**
+     * A customer is prompted to fill out the menu evaluation questionnaire
+     * once they land back on the ordering page after placing an order in
+     * this same table session — as long as something they bought still
+     * hasn't been answered.
+     */
+    private function resolvePendingReview(?string $tableSessionId): ?array
+    {
+        if (! $tableSessionId) {
+            return null;
+        }
+
+        $order = Order::where('table_session_id', $tableSessionId)
+            ->with('items', 'reviews')
+            ->latest()
+            ->get()
+            ->first(function (Order $order) {
+                $purchasedMenuIds = $order->items->pluck('menu_id')->unique();
+                $reviewedMenuIds = $order->reviews->pluck('menu_id')->unique();
+
+                return $purchasedMenuIds->diff($reviewedMenuIds)->isNotEmpty();
+            });
+
+        return $order ? ['order_id' => $order->id] : null;
     }
 }

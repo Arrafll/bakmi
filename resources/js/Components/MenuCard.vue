@@ -6,7 +6,11 @@
     <div class="relative overflow-hidden h-52 bg-amber-100">
       <img
         v-if="item.image_path"
+<<<<<<< Updated upstream
         :src="'/storage/' + item.image_path"
+=======
+        :src="menuImage(item.image_path)"
+>>>>>>> Stashed changes
         :alt="item.name"
         class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
       />
@@ -20,6 +24,12 @@
         class="absolute top-3 left-3 bg-amber-700 text-white text-xs font-semibold px-3 py-1 rounded-full capitalize"
       >
         {{ item.category }}
+      </span>
+      <span
+        v-if="percentage !== null"
+        class="absolute top-3 right-3 bg-amber-950/85 text-white text-xs font-bold px-3 py-1 rounded-full"
+      >
+        {{ rank === 1 ? '🥇' : '⭐' }} {{ percentage.toFixed(1) }}%
       </span>
     </div>
 
@@ -116,11 +126,23 @@ import { router } from '@inertiajs/vue3'
 import { route } from 'ziggy-js'
 import { ShoppingCartIcon } from '@heroicons/vue/24/outline'
 import { useFormat } from '@/composables/useFormat'
+<<<<<<< Updated upstream
+=======
+import { menuImage } from '@/utils/asset'
+>>>>>>> Stashed changes
 
 const props = defineProps({
   item: {
     type: Object,
     required: true,
+  },
+  percentage: {
+    type: Number,
+    default: null,
+  },
+  rank: {
+    type: Number,
+    default: null,
   },
 })
 
