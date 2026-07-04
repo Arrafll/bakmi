@@ -58,7 +58,7 @@
                             <td class="px-6 py-3">
                                 <StatusBadge :status="order.status" />
                             </td>
-                            <td class="px-6 py-3 text-gray-500 text-xs">{{ order.created_at }}</td>
+                            <td class="px-6 py-3 text-gray-500 text-xs">{{ formatDate(order.created_at) }}</td>
                         </tr>
                         <tr v-if="recentOrders.length === 0">
                             <td colspan="6" class="px-6 py-10 text-center text-gray-400">Belum ada pesanan</td>
@@ -97,7 +97,7 @@ const props = defineProps({
     },
 })
 
-const { formatPrice } = useFormat()
+const { formatPrice, formatDate } = useFormat()
 
 const weeklyOrders = props.weeklyOrders
 const maxWeekly = weeklyOrders.length > 0 ? Math.max(...weeklyOrders.map(d => d.count)) : 0
