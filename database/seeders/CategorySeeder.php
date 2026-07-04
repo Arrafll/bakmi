@@ -14,19 +14,11 @@ class CategorySeeder extends Seeder
     {
         //
         Category::create([
-<<<<<<< Updated upstream
-            'name' => 'Bakmi',
-        ]);
-
-        Category::create([
-            'name' => 'Snack',
-=======
             'name' => 'Menu Biasa',
         ]);
 
         Category::create([
             'name' => 'Menu Spesial',
->>>>>>> Stashed changes
         ]);
 
         Category::create([

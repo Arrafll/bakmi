@@ -1,19 +1,15 @@
 <?php
 
-<<<<<<< Updated upstream
-use App\Http\Controllers\Admin\SpkController;
-=======
 use App\Http\Controllers\Admin\CriteriaController;
 use App\Http\Controllers\Admin\MenuScoreController;
 use App\Http\Controllers\Admin\RecommendationController;
 use App\Http\Controllers\Admin\ReviewSubmissionController;
->>>>>>> Stashed changes
 use App\Http\Controllers\Admin\TableController;
 use App\Http\Controllers\AdminController;
 use App\Http\Controllers\MenuReviewController;
 use App\Http\Controllers\CartController;
 use App\Http\Controllers\OrderController;
-use App\Http\Controllers\RecommendationController;
+// use App\Http\Controllers\RecommendationController;
 use App\Http\Controllers\TableQrController;
 use App\Http\Controllers\VoucherController;
 use Illuminate\Support\Facades\Route;
@@ -114,15 +110,6 @@ Route::middleware('admin.auth')->prefix('admin')->name('admin.')->group(function
     Route::put('/vouchers/{voucher}', [AdminController::class, 'vouchersUpdate'])->name('vouchers.update');
     Route::delete('/vouchers/{voucher}', [AdminController::class, 'vouchersDestroy'])->name('vouchers.destroy');
 
-<<<<<<< Updated upstream
-    // ── SPK / DSS ──────────────────────────────────────────────────────────────
-    Route::prefix('spk')->name('spk.')->group(function () {
-        Route::get('/', [SpkController::class, 'index'])->name('index');
-        Route::put('/weights', [SpkController::class, 'updateWeights'])->name('weights.update');
-        Route::put('/scores', [SpkController::class, 'updateScores'])->name('scores.update');
-    });
-
-=======
     // ── Menu recommendation engine ────────────────────────────────────────────
     Route::prefix('criteria')->name('criteria.')->group(function () {
         Route::get('/', [CriteriaController::class, 'index'])->name('index');
@@ -137,7 +124,6 @@ Route::middleware('admin.auth')->prefix('admin')->name('admin.')->group(function
 
     Route::get('/review-submissions', [ReviewSubmissionController::class, 'index'])->name('review-submissions.index');
 
->>>>>>> Stashed changes
     // ── Table / QR management ─────────────────────────────────────────────────
     Route::prefix('tables')->name('tables.')->group(function () {
         Route::get('/', [TableController::class, 'index'])->name('index');

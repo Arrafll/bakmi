@@ -1,19 +1,5 @@
 <template>
   <CustomerLayout title="Keranjang" subtitle="Periksa pesanan Anda">
-<<<<<<< Updated upstream
-    <div class="max-w-6xl mx-auto px-4 mt-8 flex items-center gap-3 flex-wrap">
-      <div class="flex-1 min-w-0">
-        <CategoryFilter :categories="categories" v-model="activeCategory" />
-      </div>
-      <Link :href="route('recommendation.index')"
-        class="flex items-center gap-1.5 bg-amber-100 hover:bg-amber-200 text-amber-800 text-sm font-semibold px-4 py-2 rounded-xl transition-colors flex-shrink-0 border border-amber-200">
-        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-            d="M9.663 17h4.673M12 3v1m6.364 1.636l-.707.707M21 12h-1M4 12H3m3.343-5.657l-.707-.707m2.828 9.9a5 5 0 117.072 0l-.548.547A3.374 3.374 0 0014 18.469V19a2 2 0 11-4 0v-.531c0-.895-.356-1.754-.988-2.386l-.548-.547z" />
-        </svg>
-        Rekomendasi
-      </Link>
-=======
     <template #header-actions>
       <Link
         v-if="pendingReview"
@@ -28,7 +14,6 @@
 
     <div class="max-w-6xl mx-auto px-4 mt-8">
       <CategoryFilter :categories="categories" v-model="activeCategory" />
->>>>>>> Stashed changes
     </div>
 
     <!-- ── Menu Grid ─────────────────────────────────────────────────────── -->
@@ -104,8 +89,6 @@
               :key="item.menu_id"
               class="flex items-center gap-3 bg-amber-50 rounded-xl p-3"
             >
-<<<<<<< Updated upstream
-=======
               <!-- Thumbnail -->
               <div class="w-14 h-14 rounded-lg overflow-hidden bg-amber-100 flex-shrink-0">
                 <img
@@ -118,7 +101,6 @@
               </div>
 
               <!-- Name & Price -->
->>>>>>> Stashed changes
               <div class="flex-1 min-w-0">
                 <p class="font-semibold text-gray-800 truncate">{{ item.name }}</p>
                 <p class="text-sm text-amber-700">{{ formatPrice(item.price) }}</p>
@@ -254,19 +236,12 @@ import { ref, computed } from 'vue'
 import CustomerLayout from '@/Layouts/CustomerLayout.vue'
 import AppFooter from '@/Components/AppFooter.vue'
 import CategoryFilter from '@/Components/CategoryFilter.vue'
-<<<<<<< Updated upstream
-import { router, usePage, Link } from '@inertiajs/vue3'
-import { route } from 'ziggy-js'
-import { ShoppingCartIcon, XMarkIcon } from '@heroicons/vue/24/outline'
-import MenuCard from '@/Components/MenuCard.vue'
-=======
 import { Link, router, usePage } from '@inertiajs/vue3'
 import {route} from 'ziggy-js'
 import { ShoppingCartIcon, XMarkIcon, ClipboardDocumentCheckIcon } from '@heroicons/vue/24/outline'
 import MenuCard from '@/Components/MenuCard.vue'
 import RecommendedMenuSection from '@/Components/RecommendedMenuSection.vue'
 import { menuImage } from '@/utils/asset'
->>>>>>> Stashed changes
 
 // ── Props (injected by server – NEVER trusted from localStorage) ──────────────
 const props = defineProps({

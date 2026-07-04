@@ -6,11 +6,7 @@
     <div class="relative overflow-hidden h-52 bg-amber-100">
       <img
         v-if="item.image_path"
-<<<<<<< Updated upstream
-        :src="'/storage/' + item.image_path"
-=======
         :src="menuImage(item.image_path)"
->>>>>>> Stashed changes
         :alt="item.name"
         class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
       />
@@ -126,10 +122,7 @@ import { router } from '@inertiajs/vue3'
 import { route } from 'ziggy-js'
 import { ShoppingCartIcon } from '@heroicons/vue/24/outline'
 import { useFormat } from '@/composables/useFormat'
-<<<<<<< Updated upstream
-=======
 import { menuImage } from '@/utils/asset'
->>>>>>> Stashed changes
 
 const props = defineProps({
   item: {

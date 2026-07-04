@@ -60,7 +60,7 @@ class DashboardService
 
         return $result;
     }
-<<<<<<< Updated upstream
+// <<<<<<< Updated upstream
 
     public function getFavoriteMenus(int $limit = 5): array
     {
@@ -90,6 +90,6 @@ class DashboardService
             ];
         })->toArray();
     }
-=======
->>>>>>> Stashed changes
+// =======
+// >>>>>>> Stashed changes
 }

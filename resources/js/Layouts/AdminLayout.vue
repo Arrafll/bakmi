@@ -113,11 +113,7 @@ import { Link, router, usePage } from '@inertiajs/vue3'
 import { route } from 'ziggy-js'
 import { computed } from 'vue'
 import { Head } from '@inertiajs/vue3'
-<<<<<<< Updated upstream
-import { HomeIcon, ClipboardDocumentListIcon, TicketIcon, QrCodeIcon, TagIcon, ArrowLeftEndOnRectangleIcon, SparklesIcon } from '@heroicons/vue/24/outline'
-=======
 import { HomeIcon, ClipboardDocumentListIcon, TicketIcon, QrCodeIcon, TagIcon, ArrowLeftEndOnRectangleIcon, SparklesIcon, ChevronDownIcon } from '@heroicons/vue/24/outline'
->>>>>>> Stashed changes
 import OrderNotification from '@/Components/OrderNotification.vue'
 import Pusher from 'pusher-js'
 import Swal from 'sweetalert2'
@@ -266,11 +262,6 @@ const menus = [
         route: 'admin.tables.index',
     },
     {
-<<<<<<< Updated upstream
-        label: 'Menu Unggulan',
-        icon: SparklesIcon,
-        route: 'admin.spk.index',
-=======
         label: 'Menu Rekomendasi',
         icon: SparklesIcon,
         children: [
@@ -279,7 +270,6 @@ const menus = [
             { label: 'Penilaian Menu', route: 'admin.menu-scores.index' },
             { label: 'Riwayat Penilaian Pelanggan', route: 'admin.review-submissions.index' },
         ],
->>>>>>> Stashed changes
     },
 ]
 
