@@ -9,7 +9,6 @@ use App\Http\Controllers\AdminController;
 use App\Http\Controllers\MenuReviewController;
 use App\Http\Controllers\CartController;
 use App\Http\Controllers\OrderController;
-// use App\Http\Controllers\RecommendationController;
 use App\Http\Controllers\TableQrController;
 use App\Http\Controllers\VoucherController;
 use Illuminate\Support\Facades\Route;
@@ -70,11 +69,6 @@ Route::post('/orders/{order}/review', [MenuReviewController::class, 'store'])
 // Voucher apply (customer-facing)
 Route::post('/voucher/apply', [VoucherController::class, 'apply'])
     ->name('voucher.apply')
-    ->middleware('table.session');
-
-// ── SPK Recommendation (customer-facing, public) ──────────────────────────
-Route::get('/rekomendasi', [RecommendationController::class, 'index'])
-    ->name('recommendation.index')
     ->middleware('table.session');
 
 // ── Admin auth routes (guests only) ──────────────────────────────────────────

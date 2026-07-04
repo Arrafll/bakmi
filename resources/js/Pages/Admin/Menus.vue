@@ -49,10 +49,10 @@
                 </span>
               </td>
                 <td class="px-5 py-3 text-right space-x-2">
-                    <button @click="openEdit(menu)" class="flex-1 py-2 px-3 border border-primary-400 text-gray-700 bg-white rounded-md text-sm font-medium hover:bg-gray-100 hover:border-gray-500 active:bg-gray-200 transition focus:outline-none focus:ring-2 focus:ring-gray-300">
+                    <button @click="openEdit(menu)" class="py-2 px-3 border border-blue-300 text-blue-700 bg-blue-50 rounded-md text-sm font-medium hover:bg-blue-100 hover:border-blue-400 active:bg-blue-200 transition focus:outline-none focus:ring-2 focus:ring-blue-300">
                         Edit
                     </button>
-                    <button @click="confirmDelete(menu)" class="flex-1 py-2 px-3 border border-red-300 text-red-600 bg-white rounded-md text-sm font-medium hover:bg-red-50 hover:border-red-400 active:bg-red-100 transition focus:outline-none focus:ring-2 focus:ring-red-300">
+                    <button @click="confirmDelete(menu)" class="py-2 px-3 border border-red-300 text-red-600 bg-white rounded-md text-sm font-medium hover:bg-red-50 hover:border-red-400 active:bg-red-100 transition focus:outline-none focus:ring-2 focus:ring-red-300">
                         Hapus
                     </button>
                 </td>
