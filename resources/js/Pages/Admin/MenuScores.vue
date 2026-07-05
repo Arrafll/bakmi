@@ -68,7 +68,7 @@
                 <td class="px-5 py-3 sticky left-0 bg-white z-10">
                   <div class="flex items-center gap-3">
                     <div class="w-10 h-10 rounded-lg overflow-hidden bg-amber-100 flex items-center justify-center text-lg flex-shrink-0">
-                      <img v-if="menu.image_path" :src="asset(menu.image_path)" :alt="menu.name" class="w-full h-full object-cover" />
+                      <img v-if="menu.image_path" :src="asset('/storage/' + menu.image_path)" :alt="menu.name" class="w-full h-full object-cover" />
                       <span v-else>🍜</span>
                     </div>
                     <div class="min-w-0">
