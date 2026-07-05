@@ -14,6 +14,8 @@
                         <p class="text-amber-200 text-sm mt-0.5">{{ subtitle || 'Bakmi Jawa Cita Rasa Khas' }}</p>
                     </div>
                 </div>
+
+                <slot name="actions" />
             </div>
     </header>
 </template>

@@ -60,33 +60,4 @@ class DashboardService
 
         return $result;
     }
-
-    public function getFavoriteMenus(int $limit = 5): array
-    {
-        $favorites = OrderItem::select('menu_id', DB::raw('SUM(quantity) as total_ordered'))
-            ->with('menu:id,name,category')
-            ->groupBy('menu_id')
-            ->orderByDesc('total_ordered')
-            ->limit($limit)
-            ->get();
-
-        $totalQuantity = $favorites->sum('total_ordered');
-
-        if ($totalQuantity === 0) {
-            return [];
-        }
-
-        $colors = ['bg-amber-500', 'bg-blue-400', 'bg-green-400', 'bg-purple-400', 'bg-red-400'];
-
-        return $favorites->map(function ($item, $index) use ($totalQuantity, $colors) {
-            $percent = round(($item->total_ordered / $totalQuantity) * 100);
-
-            return [
-                'label' => $item->menu?->name,
-                'percent' => $percent,
-                'color' => $colors[$index % count($colors)],
-                'total_ordered' => $item->total_ordered
-            ];
-        })->toArray();
-    }
 }

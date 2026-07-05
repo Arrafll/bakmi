@@ -2,8 +2,9 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\Voucher;
 use App\Models\CartItem;
+use App\Models\Voucher;
+use Illuminate\Http\Request;
 
 class VoucherController extends Controller
 {
@@ -23,24 +24,22 @@ class VoucherController extends Controller
             'voucher_code' => 'required|string|max:50',
         ]);
 
-        // Get session ID from table session
         $sessionId = $request->session()->get('table.session_id');
 
-        if (!$sessionId) {
-            return back()->with('error', 'Sesi tidak valid.');
+        if (! $sessionId) {
+            return $this->respondWithError($request, 'Sesi tidak valid.');
         }
 
-        // Get cart items from database
         $cartItems = CartItem::with('menu:id,price')
             ->where('session_id', $sessionId)
             ->get();
 
-        $cartTotal = $cartItems->sum(fn($item) => ($item->menu->price ?? 0) * $item->quantity);
+        $cartTotal = $cartItems->sum(fn ($item) => ($item->menu->price ?? 0) * $item->quantity);
 
         $voucher = Voucher::where('code', strtoupper($request->voucher_code))->first();
 
         if (! $voucher) {
-            return back()->with('error', 'Kode voucher tidak ditemukan.');
+            return $this->respondWithError($request, 'Kode voucher tidak ditemukan.');
         }
 
         if (! $voucher->isValid($cartTotal)) {
@@ -54,14 +53,24 @@ class VoucherController extends Controller
                 $reason = 'Voucher sudah mencapai batas penggunaan.';
             }
 
-            return back()->with('error', $reason);
+            return $this->respondWithError($request, $reason);
         }
 
         $discount = $voucher->calculateDiscount($cartTotal);
 
-        return back()->with([
-            'success' => 'Voucher berhasil diterapkan!',
-            'discount' => $discount,
+        if ($request->header('X-Inertia')) {
+            return back()->with([
+                'success' => 'Voucher "' . $voucher->code . '" berhasil diterapkan!',
+                'discount' => $discount,
+            ]);
+        }
+
+        return response()->json([
+            'code' => $voucher->code,
+            'description' => $voucher->description,
+            'discount_type' => $voucher->discount_type,
+            'discount_value' => $voucher->discount_value,
+            'discount_amount' => $discount,
         ]);
     }
 

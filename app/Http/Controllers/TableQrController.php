@@ -90,9 +90,8 @@ class TableQrController extends Controller
 
     /**
      * A customer is prompted to fill out the menu evaluation questionnaire
-     * once they land back on the ordering page after placing an order in
-     * this same table session — as long as something they bought still
-     * hasn't been answered.
+     * once their order in this table session is marked "selesai" (Completed)
+     * — as long as something they bought still hasn't been answered.
      */
     private function resolvePendingReview(?string $tableSessionId): ?array
     {
@@ -101,6 +100,7 @@ class TableQrController extends Controller
         }
 
         $order = Order::where('table_session_id', $tableSessionId)
+            ->where('status', 'selesai')
             ->with('items', 'reviews')
             ->latest()
             ->get()

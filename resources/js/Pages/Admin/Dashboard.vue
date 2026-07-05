@@ -46,7 +46,7 @@
                     <div v-for="item in topRecommendations" :key="item.id" class="flex items-center gap-3">
                         <span class="w-6 text-center text-base flex-shrink-0">{{ medal(item.rank) }}</span>
                         <div class="w-10 h-10 rounded-lg overflow-hidden bg-amber-100 flex items-center justify-center text-lg flex-shrink-0">
-                            <img v-if="item.image_path" :src="asset(item.image_path)" :alt="item.name" class="w-full h-full object-cover" />
+                            <img v-if="item.image_path" :src="menuImage(item.image_path)" :alt="item.name" class="w-full h-full object-cover" />
                             <span v-else>🍜</span>
                         </div>
                         <div class="flex-1 min-w-0">
@@ -116,7 +116,7 @@ import { ShoppingCartIcon, ClipboardDocumentCheckIcon, ClipboardDocumentListIcon
 import StatusBadge from '@/Components/StatusBadge.vue'
 import StatCard from '@/Components/StatCard.vue'
 import { useFormat } from '@/composables/useFormat'
-import { asset } from '@/utils/asset'
+import { menuImage } from '@/utils/asset'
 
 const props = defineProps({
     stats: {

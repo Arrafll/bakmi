@@ -31,7 +31,7 @@
             <tr v-for="menu in menus.data" :key="menu.id" class="hover:bg-gray-50 transition-colors">
               <td class="px-5 py-3">
                 <div class="w-12 h-12 rounded-xl overflow-hidden bg-amber-100 flex items-center justify-center text-xl flex-shrink-0">
-                  <img v-if="menu.image_path" :src="asset('/storage/' + menu.image_path)" :alt="menu.name" class="w-full h-full object-cover" />
+                  <img v-if="menu.image_path" :src="menuImage(menu.image_path)" :alt="menu.name" class="w-full h-full object-cover" />
                   <span v-else>🍜</span>
                 </div>
               </td>
@@ -191,7 +191,7 @@ import { router, usePage } from '@inertiajs/vue3'
 import { route } from 'ziggy-js'
 import AdminLayout from '@/Layouts/AdminLayout.vue'
 import { useFormat } from '@/composables/useFormat'
-import { asset } from '@/utils/asset'
+import { menuImage } from '@/utils/asset'
 
 const props = defineProps({
   menus: { type: Object, default: () => ({ data: [], total: 0, current_page: 1, last_page: 1, per_page: 10, from: 0, to: 0 }) },
@@ -261,7 +261,7 @@ function openEdit(menu) {
     image: null,
     is_available: !!menu.is_available,
   }
-  imagePreview.value = menu.image_path ? asset('/storage/' + menu.image_path) : null
+  imagePreview.value = menu.image_path ? menuImage(menu.image_path) : null
   modal.value = { open: true, isEdit: true, editId: menu.id }
 }
 

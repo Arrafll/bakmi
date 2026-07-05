@@ -6,7 +6,7 @@
           ✦ Rekomendasi Untuk Anda
         </span>
       </div>
-      <h2 class="reco-heading text-2xl sm:text-3xl font-semibold text-amber-950 mt-2">Favorit Pilihan Hari Ini</h2>
+      <h2 class="text-2xl sm:text-3xl font-semibold text-amber-950 mt-2">Favorit Pilihan Hari Ini</h2>
       <p class="text-sm text-amber-800/70 mt-1 mb-5">Dipilih otomatis dari cita rasa, popularitas, porsi, dan kualitas penyajian.</p>
 
       <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
@@ -32,11 +32,3 @@ defineProps({
   },
 })
 </script>
-
-<style scoped>
-@import url('https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@600&display=swap');
-
-.reco-heading {
-  font-family: 'Cormorant Garamond', serif;
-}
-</style>

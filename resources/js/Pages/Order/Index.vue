@@ -93,7 +93,7 @@
               <div class="w-14 h-14 rounded-lg overflow-hidden bg-amber-100 flex-shrink-0">
                 <img
                   v-if="item.image_path"
-                  :src="asset('/storage/' + item.image_path)"
+                  :src="menuImage(item.image_path)"
                   :alt="item.name"
                   class="w-full h-full object-cover"
                 />
@@ -232,11 +232,12 @@ import { ref, computed } from 'vue'
 import CustomerLayout from '@/Layouts/CustomerLayout.vue'
 import AppFooter from '@/Components/AppFooter.vue'
 import CategoryFilter from '@/Components/CategoryFilter.vue'
-import { router, usePage } from '@inertiajs/vue3'
+import { Link, router, usePage } from '@inertiajs/vue3'
 import {route} from 'ziggy-js'
-import { ShoppingCartIcon, XMarkIcon } from '@heroicons/vue/24/outline'
+import { ShoppingCartIcon, XMarkIcon, ClipboardDocumentCheckIcon } from '@heroicons/vue/24/outline'
 import MenuCard from '@/Components/MenuCard.vue'
-import { asset } from '@/utils/asset'
+import RecommendedMenuSection from '@/Components/RecommendedMenuSection.vue'
+import { menuImage } from '@/utils/asset'
 
 // ── Props (injected by server – NEVER trusted from localStorage) ──────────────
 const props = defineProps({
