@@ -10,6 +10,7 @@ use App\Models\Menu;
 use App\Models\Category;
 use App\Models\Voucher;
 use App\Services\DashboardService;
+use App\Services\MenuRecommendationService;
 use App\Services\MenuService;
 use App\Services\CategoryService;
 use App\Services\VoucherService;
@@ -18,6 +19,7 @@ class AdminController extends Controller
 {
     public function __construct(
         private DashboardService $dashboardService,
+        private MenuRecommendationService $recommendationService,
         private MenuService $menuService,
         private CategoryService $categoryService,
         private VoucherService $voucherService,
@@ -55,11 +57,13 @@ class AdminController extends Controller
         $stats = $this->dashboardService->getStats();
         $recentOrders = $this->dashboardService->getRecentOrders();
         $weeklyOrders = $this->dashboardService->getWeeklyOrders();
+        $topRecommendations = $this->recommendationService->getTopRecommendations(5);
 
         return Inertia::render('Admin/Dashboard', [
             'stats' => $stats,
             'recentOrders' => $recentOrders,
             'weeklyOrders' => $weeklyOrders,
+            'topRecommendations' => $topRecommendations,
         ]);
     }
 
