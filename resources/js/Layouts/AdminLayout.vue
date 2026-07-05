@@ -263,6 +263,11 @@ const menus = [
         route: 'admin.tables.index',
     },
     {
+        label: 'Menu Unggulan',
+        icon: SparklesIcon,
+        route: 'admin.spk.index',
+    },
+    {
         label: 'Menu Rekomendasi',
         icon: SparklesIcon,
         children: [

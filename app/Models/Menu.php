@@ -20,6 +20,11 @@ class Menu extends Model
         return $this->belongsTo(Category::class, 'category_id');
     }
 
+    public function sawScores()
+    {
+        return $this->hasMany(SawMenuScore::class);
+    }
+
     public function reviews()
     {
         return $this->hasMany(MenuReview::class);
