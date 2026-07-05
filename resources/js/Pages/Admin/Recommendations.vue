@@ -27,7 +27,7 @@
           :class="row.rank === 1 ? 'border-amber-400' : 'border-transparent'"
         >
           <div class="w-14 h-14 rounded-xl overflow-hidden bg-amber-100 flex items-center justify-center text-2xl flex-shrink-0">
-            <img v-if="row.menu.image_path" :src="menuImage(row.menu.image_path)" :alt="row.menu.name" class="w-full h-full object-cover" />
+            <img v-if="row.menu.image_path" :src="asset(row.menu.image_path)" :alt="row.menu.name" class="w-full h-full object-cover" />
             <span v-else>🍜</span>
           </div>
           <div class="min-w-0 flex-1">
@@ -65,7 +65,7 @@
                   <td class="px-5 py-3">
                     <div class="flex items-center gap-3">
                       <div class="w-10 h-10 rounded-lg overflow-hidden bg-amber-100 flex items-center justify-center text-lg flex-shrink-0">
-                        <img v-if="row.menu.image_path" :src="menuImage(row.menu.image_path)" :alt="row.menu.name" class="w-full h-full object-cover" />
+                        <img v-if="row.menu.image_path" :src="asset(row.menu.image_path)" :alt="row.menu.name" class="w-full h-full object-cover" />
                         <span v-else>🍜</span>
                       </div>
                       <div class="min-w-0">
@@ -147,7 +147,7 @@ import { ref } from 'vue'
 import { Link } from '@inertiajs/vue3'
 import { route } from 'ziggy-js'
 import AdminLayout from '@/Layouts/AdminLayout.vue'
-import { menuImage } from '@/utils/asset'
+import { asset } from '@/utils/asset'
 
 defineProps({
   criteria: { type: Array, default: () => [] },

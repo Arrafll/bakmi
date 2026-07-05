@@ -5,7 +5,3 @@ export function asset(path) {
     const p = path.startsWith('/') ? path : '/' + path;
     return base + p;
 }
-
-export function menuImage(path) {
-    return asset(path);
-}

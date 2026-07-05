@@ -22,7 +22,7 @@
           <div v-for="item in items" :key="item.menu_id" class="border border-gray-100 rounded-2xl p-5">
             <div class="flex items-center gap-3 mb-5">
               <div class="w-12 h-12 rounded-xl overflow-hidden bg-amber-100 flex items-center justify-center text-xl flex-shrink-0">
-                <img v-if="item.image_path" :src="menuImage(item.image_path)" :alt="item.name" class="w-full h-full object-cover" />
+                <img v-if="item.image_path" :src="asset(item.image_path)" :alt="item.name" class="w-full h-full object-cover" />
                 <span v-else>🍜</span>
               </div>
               <h3 class="font-bold text-gray-800">{{ item.name }}</h3>
@@ -65,7 +65,7 @@ import { Link, router, usePage } from '@inertiajs/vue3'
 import { route } from 'ziggy-js'
 import CustomerLayout from '@/Layouts/CustomerLayout.vue'
 import CriterionScaleInput from '@/Components/CriterionScaleInput.vue'
-import { menuImage } from '@/utils/asset'
+import { asset } from '@/utils/asset'
 
 const props = defineProps({
   order: {
