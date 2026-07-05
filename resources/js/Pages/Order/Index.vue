@@ -242,10 +242,11 @@ import { ref, computed } from 'vue'
 import CustomerLayout from '@/Layouts/CustomerLayout.vue'
 import AppFooter from '@/Components/AppFooter.vue'
 import CategoryFilter from '@/Components/CategoryFilter.vue'
-import { router, usePage } from '@inertiajs/vue3'
+import { Link, router, usePage } from '@inertiajs/vue3'
 import {route} from 'ziggy-js'
-import { ShoppingCartIcon, XMarkIcon } from '@heroicons/vue/24/outline'
+import { ShoppingCartIcon, XMarkIcon, ClipboardDocumentCheckIcon } from '@heroicons/vue/24/outline'
 import MenuCard from '@/Components/MenuCard.vue'
+import RecommendedMenuSection from '@/Components/RecommendedMenuSection.vue'
 import { asset } from '@/utils/asset'
 
 // ── Props (injected by server – NEVER trusted from localStorage) ──────────────
