@@ -10,7 +10,6 @@ use App\Http\Controllers\MenuReviewController;
 use App\Http\Controllers\CartController;
 use App\Http\Controllers\OrderController;
 use App\Http\Controllers\TableQrController;
-use App\Http\Controllers\RecommendationController;
 use App\Http\Controllers\VoucherController;
 use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
