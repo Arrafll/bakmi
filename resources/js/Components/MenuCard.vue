@@ -21,6 +21,12 @@
       >
         {{ item.category }}
       </span>
+      <span
+        v-if="percentage !== null"
+        class="absolute top-3 right-3 bg-amber-950/85 text-white text-xs font-bold px-3 py-1 rounded-full"
+      >
+        {{ rank === 1 ? '🥇' : '⭐' }} {{ percentage.toFixed(1) }}%
+      </span>
     </div>
 
     <!-- Body -->
@@ -122,6 +128,14 @@ const props = defineProps({
   item: {
     type: Object,
     required: true,
+  },
+  percentage: {
+    type: Number,
+    default: null,
+  },
+  rank: {
+    type: Number,
+    default: null,
   },
 })
 

@@ -19,4 +19,9 @@ class Menu extends Model
     {
         return $this->belongsTo(Category::class, 'category_id');
     }
+
+    public function reviews()
+    {
+        return $this->hasMany(MenuReview::class);
+    }
 }

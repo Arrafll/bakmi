@@ -1,5 +1,9 @@
 <template>
-    <AppHeader :title="title" :subtitle="subtitle" :logo="logo" :icon="icon" />
+    <AppHeader :title="title" :subtitle="subtitle" :logo="logo" :icon="icon">
+        <template #actions>
+            <slot name="header-actions" />
+        </template>
+    </AppHeader>
     <slot />
 </template>
 

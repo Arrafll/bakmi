@@ -2,14 +2,20 @@
 
 namespace App\Http\Controllers;
 
-use Illuminate\Http\Request;
 use App\Models\Voucher;
 use App\Models\CartItem;
 
 class VoucherController extends Controller
 {
     /**
-     * Validate a voucher code against the current cart total and return discount info.
+     * Validate a voucher against the customer's actual server-side cart
+     * total — a client-supplied total is never trusted — and report the
+     * discount.
+     *
+     * Two customer-facing pages call this with different contracts: the QR
+     * self-order page submits via Inertia and reads the result back from
+     * flash data, while the standalone cart page calls it as a plain JSON
+     * endpoint. Both are supported here.
      */
     public function apply(Request $request)
     {
@@ -57,5 +63,14 @@ class VoucherController extends Controller
             'success' => 'Voucher berhasil diterapkan!',
             'discount' => $discount,
         ]);
+    }
+
+    private function respondWithError(Request $request, string $message)
+    {
+        if ($request->header('X-Inertia')) {
+            return back()->with('error', $message);
+        }
+
+        return response()->json(['error' => $message], 422);
     }
 }

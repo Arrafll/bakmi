@@ -1,5 +1,17 @@
 <template>
   <CustomerLayout title="Keranjang" subtitle="Periksa pesanan Anda">
+    <template #header-actions>
+      <Link
+        v-if="pendingReview"
+        :href="route('orders.review.show', pendingReview.order_id)"
+        class="flex items-center gap-1.5 bg-white/15 hover:bg-white/25 text-white text-sm font-semibold px-3 py-2 rounded-xl transition-colors flex-shrink-0"
+      >
+        <ClipboardDocumentCheckIcon class="w-4 h-4" /> Isi Penilaian Menu
+      </Link>
+    </template>
+
+    <RecommendedMenuSection :items="recommendations" />
+
     <div class="max-w-6xl mx-auto px-4 mt-8">
       <CategoryFilter :categories="categories" v-model="activeCategory" />
     </div>
@@ -240,6 +252,14 @@ const props = defineProps({
     type: Array,
     default: null,
   },
+  recommendations: {
+    type: Array,
+    default: () => [],
+  },
+  pendingReview: {
+    type: Object,
+    default: null,
+  },
 })
 
 // ── Shared state (cart comes from server session via HandleInertiaRequests) ───
@@ -274,7 +294,8 @@ const categories = computed(() => {
 
 const filteredMenus = computed(() => {
   if (activeCategory.value === 'all') return props.menus
-  return props.menus.filter(m => m.category === activeCategory.value)
+  const target = activeCategory.value.toLowerCase()
+  return props.menus.filter(m => (m.category ?? '').toLowerCase() === target)
 })
 
 // ── Helpers ───────────────────────────────────────────────────────────────────
