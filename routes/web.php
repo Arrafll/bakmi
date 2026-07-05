@@ -65,6 +65,11 @@ Route::get('/orders/{order}/review', [MenuReviewController::class, 'create'])
 Route::post('/orders/{order}/review', [MenuReviewController::class, 'store'])
     ->name('orders.review.store');
 
+// Recommendation engine routes (customer-facing)
+Route::get('/recommendations', [RecommendationController::class, 'index'])
+    ->name('recommendations.index')
+    ->middleware('table.session');
+
 // Voucher apply (customer-facing)
 Route::post('/voucher/apply', [VoucherController::class, 'apply'])
     ->name('voucher.apply')
