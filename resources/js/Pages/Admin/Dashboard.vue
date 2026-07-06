@@ -116,7 +116,7 @@ import { ShoppingCartIcon, ClipboardDocumentCheckIcon, ClipboardDocumentListIcon
 import StatusBadge from '@/Components/StatusBadge.vue'
 import StatCard from '@/Components/StatCard.vue'
 import { useFormat } from '@/composables/useFormat'
-import { menuImage } from '@/utils/asset'
+import { asset } from '@/utils/asset'
 
 const props = defineProps({
     stats: {

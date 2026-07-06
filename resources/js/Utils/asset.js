@@ -6,12 +6,3 @@ export function asset(path) {
     return base + p;
 }
 
-// Menu photos come from two different places: the seed catalog ships its
-// photos inside public/img-bakmi (versioned with the app), while photos
-// uploaded through the admin panel are written to the storage disk and
-// served through the public/storage symlink. Do not simplify this to a
-// plain asset(path) call — that breaks one of the two cases every time.
-export function menuImage(imagePath) {
-    if (!imagePath) return null;
-    return imagePath.startsWith('img-bakmi/') ? asset('/' + imagePath) : asset('/storage/' + imagePath);
-}

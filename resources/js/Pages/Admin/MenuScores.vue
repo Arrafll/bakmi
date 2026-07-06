@@ -119,7 +119,7 @@ import { ref, computed } from 'vue'
 import { Link } from '@inertiajs/vue3'
 import { route } from 'ziggy-js'
 import AdminLayout from '@/Layouts/AdminLayout.vue'
-import { menuImage } from '@/utils/asset'
+import { asset } from '@/utils/asset'
 
 const props = defineProps({
   criteria: { type: Array, default: () => [] },

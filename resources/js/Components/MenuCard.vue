@@ -6,7 +6,7 @@
     <div class="relative overflow-hidden h-52 bg-amber-100">
       <img
         v-if="item.image_path"
-        :src="menuImage(item.image_path)"
+        :src="asset('/storage/' + item.image_path)"
         :alt="item.name"
         class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
       />
@@ -122,7 +122,7 @@ import { router } from '@inertiajs/vue3'
 import { route } from 'ziggy-js'
 import { ShoppingCartIcon } from '@heroicons/vue/24/outline'
 import { useFormat } from '@/composables/useFormat'
-import { menuImage } from '@/utils/asset'
+import { asset } from '@/utils/asset'
 
 const props = defineProps({
   item: {
