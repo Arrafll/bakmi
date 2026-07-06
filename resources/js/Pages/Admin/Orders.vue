@@ -6,7 +6,7 @@
       <!-- Filter by status -->
       <div class="flex gap-2 flex-wrap">
         <button
-          v-for="s in ['all', ...statuses]" :key="s"
+          v-for="s in [...statuses, 'all']" :key="s"
           @click="activeFilter = s; currentPage = 1"
           :class="[
             'px-3 py-1.5 rounded-full text-xs font-semibold transition-colors',
@@ -283,7 +283,14 @@ const statusCounts = computed(() => {
 
 const filteredOrders = computed(() => {
   if (activeFilter.value === 'all') return props.orders.data
-  return props.orders.data.filter(o => o.status === activeFilter.value)
+
+  const filtered = props.orders.data.filter(o => o.status === activeFilter.value)
+
+  if (activeFilter.value === 'dipesan') {
+    return [...filtered].sort((a, b) => new Date(a.created_at) - new Date(b.created_at))
+  }
+
+  return filtered
 })
 
 const visiblePages = computed(() => {
