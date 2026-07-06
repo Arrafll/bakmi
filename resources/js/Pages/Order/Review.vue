@@ -65,7 +65,7 @@ import { Link, router, usePage } from '@inertiajs/vue3'
 import { route } from 'ziggy-js'
 import CustomerLayout from '@/Layouts/CustomerLayout.vue'
 import CriterionScaleInput from '@/Components/CriterionScaleInput.vue'
-import { asset } from '@/utils/asset'
+import { menuImage } from '@/utils/asset'
 
 const props = defineProps({
   order: {
