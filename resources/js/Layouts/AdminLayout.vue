@@ -113,7 +113,7 @@ import { Link, router, usePage } from '@inertiajs/vue3'
 import { route } from 'ziggy-js'
 import { computed } from 'vue'
 import { Head } from '@inertiajs/vue3'
-import { HomeIcon, ClipboardDocumentListIcon, TicketIcon, QrCodeIcon, TagIcon, ArrowLeftEndOnRectangleIcon, SparklesIcon, ChevronDownIcon } from '@heroicons/vue/24/outline'
+import { HomeIcon, ClipboardDocumentListIcon, TicketIcon, QrCodeIcon, TagIcon, ArrowLeftEndOnRectangleIcon, SparklesIcon, ChevronDownIcon, DocumentChartBarIcon } from '@heroicons/vue/24/outline'
 import OrderNotification from '@/Components/OrderNotification.vue'
 import Pusher from 'pusher-js'
 import Swal from 'sweetalert2'
@@ -261,6 +261,11 @@ const menus = [
         label: 'Meja',
         icon: QrCodeIcon,
         route: 'admin.tables.index',
+    },
+    {
+        label: 'Laporan',
+        icon: DocumentChartBarIcon,
+        route: 'admin.reports.index',
     },
     {
         label: 'Menu Rekomendasi',

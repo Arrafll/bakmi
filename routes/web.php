@@ -3,6 +3,7 @@
 use App\Http\Controllers\Admin\CriteriaController;
 use App\Http\Controllers\Admin\MenuScoreController;
 use App\Http\Controllers\Admin\RecommendationController;
+use App\Http\Controllers\Admin\ReportController;
 use App\Http\Controllers\Admin\ReviewSubmissionController;
 use App\Http\Controllers\Admin\TableController;
 use App\Http\Controllers\AdminController;
@@ -121,6 +122,10 @@ Route::middleware('admin.auth')->prefix('admin')->name('admin.')->group(function
     Route::get('/recommendations', [RecommendationController::class, 'index'])->name('recommendations.index');
 
     Route::get('/review-submissions', [ReviewSubmissionController::class, 'index'])->name('review-submissions.index');
+
+    // ── Reports ───────────────────────────────────────────────────────────────
+    Route::get('/reports', [ReportController::class, 'index'])->name('reports.index');
+    Route::get('/reports/data', [ReportController::class, 'data'])->name('reports.data');
 
     // ── Table / QR management ─────────────────────────────────────────────────
     Route::prefix('tables')->name('tables.')->group(function () {
